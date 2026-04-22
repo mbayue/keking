@@ -11,7 +11,7 @@ export const command: SlashCommand = {
     if (!interaction.inCachedGuild()) {
       const reply = {
         embeds: [createErrorEmbed("Server Only", "This command can only be used inside a server.")],
-        flags: MessageFlags.Ephemeral as const,
+        flags: MessageFlags.Ephemeral,
       } satisfies InteractionReplyOptions;
 
       await interaction.reply(reply);

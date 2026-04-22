@@ -114,7 +114,7 @@ export const command: SlashCommand = {
 
       const reply = {
         embeds: [createErrorEmbed("NovelPia Error", "NovelPia search failed. Please try again in a moment.")],
-        flags: MessageFlags.Ephemeral as const,
+        flags: MessageFlags.Ephemeral,
       } satisfies InteractionReplyOptions;
 
       if (interaction.deferred || interaction.replied) {

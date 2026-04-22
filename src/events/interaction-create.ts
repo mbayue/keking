@@ -24,7 +24,7 @@ export const event: BotEvent = {
     if (!command) {
       const reply = {
         embeds: [createErrorEmbed("Unknown Command", "That command is not implemented yet.")],
-        flags: MessageFlags.Ephemeral as const,
+        flags: MessageFlags.Ephemeral,
       } satisfies InteractionReplyOptions;
 
       await interaction.reply(reply);
@@ -38,7 +38,7 @@ export const event: BotEvent = {
 
       const reply = {
         embeds: [createErrorEmbed("Command Failed", "Something went wrong while running that command.")],
-        flags: MessageFlags.Ephemeral as const,
+        flags: MessageFlags.Ephemeral,
       } satisfies InteractionReplyOptions;
 
       if (interaction.replied || interaction.deferred) {

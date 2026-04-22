@@ -27,7 +27,7 @@ export const command: SlashCommand = {
     .setDescription("Shows bot health and database stats."),
   async execute(interaction) {
     const reply = {
-      flags: MessageFlags.Ephemeral as const,
+      flags: MessageFlags.Ephemeral,
     } satisfies InteractionReplyOptions;
 
     await interaction.deferReply(reply);

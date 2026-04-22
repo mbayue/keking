@@ -48,7 +48,14 @@ export class MusicPlayer {
         },
       });
 
-      return `Now playing: ${result.track.title} by ${result.track.author}`;
+      let reply = ''
+      if (!this.discordPlayer.nodes.get(this.guildId)?.isPlaying()) {
+        reply = `Now playing: ${result.track.title} by ${result.track.author}`;
+      } else {
+        reply = `Added to queue: ${result.track.title} by ${result.track.author}`;
+      }
+
+      return reply;
     } catch (error) {
       console.error("Error playing track:", error);
       return "Failed to play the track.";
@@ -78,6 +85,26 @@ export class MusicPlayer {
     return "No track is currently playing.";
   }
 
+  pause(): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No music is currently playing.";
+
+    if (queue.node.pause()) {
+      return "Music paused.";
+    }
+    return "Music is already paused.";
+  }
+
+  resume(): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No music is currently playing.";
+
+    if (queue.node.resume()) {
+      return "Music resumed.";
+    }
+    return "Music is already playing.";
+  }
+
   stop(): string {
     const queue = this.discordPlayer.nodes.get(this.guildId);
     if (queue) {
@@ -97,6 +124,92 @@ export class MusicPlayer {
     const queue = this.discordPlayer.nodes.get(this.guildId);
     if (!queue?.currentTrack) return null;
     return `${queue.currentTrack.title} by ${queue.currentTrack.author}`;
+  }
+
+  getNowPlayingDetails(): { track: string; duration: string; queueSize: number } | null {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue?.currentTrack) return null;
+
+    const durationMs = queue.currentTrack.durationMS || 0;
+    const durationMins = Math.floor(durationMs / 60000);
+    const durationSecs = Math.floor((durationMs % 60000) / 1000);
+
+    return {
+      track: `${queue.currentTrack.title} by ${queue.currentTrack.author}`,
+      duration: `${durationMins}:${durationSecs.toString().padStart(2, '0')}`,
+      queueSize: queue.tracks.size,
+    };
+  }
+
+  removeTrack(index: number): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No queue available.";
+
+    const tracks = queue.tracks.toArray();
+    if (index < 0 || index >= tracks.length) {
+      return `Invalid track index. Queue has ${tracks.length} tracks.`;
+    }
+
+    const removed = tracks[index];
+    if (removed) {
+      queue.tracks.remove((track: Track) => track === removed);
+      return `Removed: ${removed.title || 'Unknown'} by ${removed.author || 'Unknown'}`;
+    }
+    return "Failed to remove track.";
+  }
+
+  clearQueue(): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No queue available.";
+
+    const size = queue.tracks.size;
+    queue.tracks.clear();
+    return `Cleared ${size} tracks from the queue.`;
+  }
+
+  async search(query: string): Promise<Track[]> {
+    try {
+      const results = await this.discordPlayer.search(query, {});
+      return results.tracks.slice(0, 5);
+    } catch (error) {
+      console.error("Search error:", error);
+      return [];
+    }
+  }
+
+  async playTrack(track: Track): Promise<string> {
+    if (!this.activeChannel) return "Not connected to a voice channel.";
+
+    try {
+      const queue = this.discordPlayer.nodes.get(this.guildId) ||
+        await this.discordPlayer.nodes.create(this.guildId, {
+          metadata: { guildId: this.guildId },
+          leaveOnEnd: true,
+          leaveOnEndCooldown: 60_000,
+        });
+
+      if (!queue.connection) {
+        await queue.connect(this.activeChannel as any);
+      }
+
+      queue.addTrack(track);
+
+      let result = ''
+
+      if (!queue.isPlaying()) {
+        await queue.node.play();
+        result = `Now playing: ${track.title} by ${track.author}`;
+      }
+
+      if (queue.isPlaying()) {
+        result = `Added to queue: ${track.title} by ${track.author}`;
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error playing track:", error);
+      return "Failed to play the track.";
+    }
   }
 
   disconnect(): void {

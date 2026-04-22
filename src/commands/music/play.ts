@@ -41,9 +41,16 @@ export const command: SlashCommand = {
 
     const result = await player.play(url);
 
+    let reply = ''
+    if (result.includes('Now playing:')) {
+      reply = 'Now playing:';
+    } else {
+      reply = 'Added to queue:';
+    }
+
     await interaction.editReply({
       embeds: [createInfoEmbed({
-        title: 'Now Playing',
+        title: reply,
         description: result,
       })],
     });

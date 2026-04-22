@@ -1,5 +1,4 @@
 import { MessageFlags, SlashCommandBuilder, type InteractionReplyOptions } from "discord.js";
-
 import type { SlashCommand } from "../../structures/command.js";
 import { createInfoEmbed } from "../../utils/embeds.js";
 
@@ -12,14 +11,19 @@ export const command: SlashCommand = {
       title: "Available Commands",
       fields: [
         { name: "Utility", value: "`/help`, `/ping`, `/server`" },
+        {
+          name: "Music",
+          value:
+            "`/clear`, `/leave`, `/now`, `/pause`, `/play`, `/queue`, `/remove`, `/resume`, `/search`, `/skip`, `/stop`",
+        },
         { name: "Integrations", value: "`/pia`" },
-        { name: "Admin", value: "`/sync`, `/guildinfo`, `/botstats`" },
+        { name: "Admin", value: "`/botstats`, `/guildinfo`, `/sync`" },
       ],
     });
 
     const reply = {
       embeds: [embed],
-      flags: MessageFlags.Ephemeral as const,
+      flags: MessageFlags.Ephemeral,
     } satisfies InteractionReplyOptions;
 
     await interaction.reply(reply);
