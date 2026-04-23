@@ -15,4 +15,5 @@ export const config = {
   clientId: getEnv("DISCORD_CLIENT_ID"),
   guildId: process.env.DISCORD_GUILD_ID,
   databaseUrl: process.env.DATABASE_URL,
+  ytCookies: process.env.YOUTUBE_COOKIES || '',
 };
