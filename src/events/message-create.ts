@@ -3,7 +3,7 @@ import { Events, MessageFlags, type Message } from "discord.js";
 import type { BotEvent } from "../structures/event.js";
 import { extractSocialMirrorLinks } from "../utils/social-preview.js";
 
-async function previewLink(message: Message): Promise<void> {
+async function previewSocialLinks(message: Message): Promise<void> {
   if (!message.inGuild() || message.author.bot) {
     return;
   }
@@ -30,6 +30,6 @@ async function previewLink(message: Message): Promise<void> {
 export const event: BotEvent = {
   name: Events.MessageCreate,
   execute(message) {
-    return previewLink(message as Message);
+    return previewSocialLinks(message as Message);
   },
 };

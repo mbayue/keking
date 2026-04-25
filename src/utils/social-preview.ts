@@ -3,6 +3,7 @@ const STATUS_URL_PATTERN =
 const INSTAGRAM_URL_PATTERN =
   /https?:\/\/(?:www\.)?instagram\.com\/(p|reel|reels)\/([A-Za-z0-9_-]+)(?:\/)?(?:\?[^\s]*)?/gi;
 const FACEBOOK_URL_PATTERN = /https?:\/\/(?:www\.|m\.)?facebook\.com\/[^\s]+|https?:\/\/fb\.watch\/[^\s]+/gi;
+const REDDIT_URL_PATTERN = /https?:\/\/(?:www\.|old\.)?reddit\.com\/[^\s]+|https?:\/\/redd\.it\/[^\s]+/gi;
 
 function normalizeUrl(username: string, statusId: string): string {
   return `https://fixupx.com/${username}/status/${statusId}`;
@@ -23,6 +24,26 @@ function normalizeFacebookUrl(rawUrl: string): string | null {
       url.hostname === "fb.watch"
     ) {
       url.hostname = "facebed.com";
+      return url.toString();
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRedditUrl(rawUrl: string): string | null {
+  try {
+    const url = new URL(rawUrl);
+
+    if (
+      url.hostname === "reddit.com" ||
+      url.hostname === "www.reddit.com" ||
+      url.hostname === "old.reddit.com" ||
+      url.hostname === "redd.it"
+    ) {
+      url.hostname = "rxddit.com";
       return url.toString();
     }
 
@@ -66,6 +87,22 @@ export function extractSocialMirrorLinks(content: string): string[] {
     }
 
     const normalizedUrl = normalizeFacebookUrl(rawUrl);
+
+    if (!normalizedUrl) {
+      continue;
+    }
+
+    links.set(normalizedUrl, normalizedUrl);
+  }
+
+  for (const match of content.matchAll(REDDIT_URL_PATTERN)) {
+    const rawUrl = match[0];
+
+    if (!rawUrl) {
+      continue;
+    }
+
+    const normalizedUrl = normalizeRedditUrl(rawUrl);
 
     if (!normalizedUrl) {
       continue;
