@@ -1,10 +1,12 @@
-import { Player, Track } from "discord-player";
+import { Player, Track, QueueRepeatMode } from "discord-player";
 import { DefaultExtractors } from "@discord-player/extractor";
 import { YoutubeiExtractor } from "discord-player-youtubei";
 import type { GuildMember, VoiceBasedChannel } from "discord.js";
 import { Client } from "discord.js";
 import { youtubeCookieHandler } from "./cookies-handler.js";
 import { TTSExtractor } from "discord-player-tts";
+import { registerMusicEvents } from "./music-events.js";
+import { Client as GeniusClient } from "genius-lyrics";
 
 // Initialize discord-player
 let player: Player | null = null;
@@ -22,26 +24,31 @@ export async function initializePlayer(client: Client): Promise<Player> {
       },
       useServerAbrStream: true,
       generateWithPoToken: true,
-      logLevel: "ALL"
+      // logLevel: "ALL"
     });
     await player.extractors.register(TTSExtractor, {
       language: "en",
       slow: false
     });
-    const extractorNames = player.extractors.store.map((extractor) => extractor.identifier).join(", ");
-    console.log(`[music] loaded extractors: ${extractorNames}`);
+
+    await registerMusicEvents(player, client);
   }
   return player;
 }
 
 export class MusicPlayer {
   private activeChannel: VoiceBasedChannel | null = null;
+  private textChannelId: string | null = null;
   private discordPlayer: Player;
   private guildId: string;
 
   constructor(discordPlayer: Player, guildId: string) {
     this.discordPlayer = discordPlayer;
     this.guildId = guildId;
+  }
+
+  setTextChannel(channelId: string): void {
+    this.textChannelId = channelId;
   }
 
   async joinChannel(member: GuildMember): Promise<boolean> {
@@ -58,20 +65,17 @@ export class MusicPlayer {
       const result = await this.discordPlayer.play(this.activeChannel as any, normalizedQuery, {
         nodeOptions: {
           leaveOnEnd: true,
-          leaveOnEndCooldown: 60_000,
-          metadata: { guildId: this.guildId },
+          leaveOnEndCooldown: 300_000,
+          metadata: { guildId: this.guildId, textChannelId: this.textChannelId },
         },
       });
       this.logVoiceConnectionState("play");
 
-      let reply = ''
-      if (this.discordPlayer.nodes.get(this.guildId)?.size === 0) {
-        reply = `Now playing: ${result.track.title} by ${result.track.author}`;
-      } else {
-        reply = `Added to queue: ${result.track.title} by ${result.track.author}`;
+      if (result.searchResult.playlist) {
+        return `${result.searchResult.playlist.title} with ${result.searchResult.tracks.length} tracks to the queue.`;
       }
 
-      return reply;
+      return `${result.track.title} by ${result.track.author}`;
     } catch (error) {
       console.error("Error playing track:", error);
       return "Failed to play the track. If this is a YouTube link, try using the full watch URL or a song title.";
@@ -198,6 +202,86 @@ export class MusicPlayer {
     return `Cleared ${size} tracks from the queue.`;
   }
 
+  shuffle(): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No queue available.";
+
+    if (queue.tracks.size < 2) {
+      return "Need at least 2 tracks in queue to shuffle.";
+    }
+
+    queue.tracks.shuffle();
+    return "Queue shuffled!";
+  }
+
+  setLoopMode(mode: 'off' | 'track' | 'queue' | 'autoplay'): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No queue available.";
+
+    switch (mode) {
+      case 'off':
+        queue.setRepeatMode(QueueRepeatMode.OFF);
+        return "Loop mode disabled.";
+      case 'track':
+        queue.setRepeatMode(QueueRepeatMode.TRACK);
+        return "Now looping current track.";
+      case 'queue':
+        queue.setRepeatMode(QueueRepeatMode.QUEUE);
+        return "Now looping entire queue.";
+      case 'autoplay':
+        queue.setRepeatMode(QueueRepeatMode.AUTOPLAY);
+        return "Autoplay enabled - will add similar tracks when queue ends.";
+      default:
+        return "Invalid loop mode.";
+    }
+  }
+
+  getLoopMode(): string {
+    const queue = this.discordPlayer.nodes.get(this.guildId);
+    if (!queue) return "No queue available.";
+
+    const mode = queue.repeatMode;
+    switch (mode) {
+      case QueueRepeatMode.OFF:
+        return 'off';
+      case QueueRepeatMode.TRACK:
+        return 'track';
+      case QueueRepeatMode.QUEUE:
+        return 'queue';
+      case QueueRepeatMode.AUTOPLAY:
+        return 'autoplay';
+      default:
+        return 'unknown';
+    }
+  }
+
+  async getLyrics(trackTitle?: string, artist?: string): Promise<{ lyrics: string; title: string; artist: string } | null> {
+    try {
+      let query = '';
+      if (trackTitle && artist) {
+        query = `${trackTitle} ${artist}`;
+      } else {
+        const currentTrack = this.getCurrentTrack();
+        if (!currentTrack) return null;
+        query = currentTrack;
+      }
+
+      const client = new GeniusClient();
+      const songs = await client.songs.search(query);
+      if (songs.length === 0 || !songs[0]) return null;
+
+      const lyrics = await songs[0].lyrics();
+      return {
+        lyrics: lyrics || 'No lyrics found.',
+        title: songs[0].title || 'Unknown',
+        artist: songs[0].artist?.name || 'Unknown',
+      };
+    } catch (error) {
+      console.error("Lyrics error:", error);
+      return null;
+    }
+  }
+
   async search(query: string): Promise<Track[]> {
     try {
       const results = await this.discordPlayer.search(query, {});
@@ -214,31 +298,17 @@ export class MusicPlayer {
     try {
       const queue = this.discordPlayer.nodes.get(this.guildId) ||
         this.discordPlayer.nodes.create(this.guildId, {
-          metadata: { guildId: this.guildId },
+          metadata: { guildId: this.guildId, textChannelId: this.textChannelId },
           leaveOnEnd: true,
-          leaveOnEndCooldown: 60000,
+          leaveOnEndCooldown: 300_000,
         });
 
-      if (!queue.connection) {
-        await queue.connect(this.activeChannel as any);
-        this.logVoiceConnectionState("playTrack.connect");
+      if (this.textChannelId) {
+        queue.metadata = { ...queue.metadata, guildId: this.guildId, textChannelId: this.textChannelId };
       }
 
       queue.addTrack(track);
-
-      let result = ''
-
-      if (!queue.isPlaying()) {
-        await queue.node.play();
-        this.logVoiceConnectionState("playTrack.start");
-        result = `Now playing: ${track.title} by ${track.author}`;
-      }
-
-      if (queue.size > 1) {
-        result = `Added to queue: ${track.title} by ${track.author}`;
-      }
-
-      return result;
+      return `${track.title} by ${track.author}`;
     } catch (error) {
       console.error("Error playing track:", error);
       return "Failed to play the track.";
@@ -253,20 +323,13 @@ export class MusicPlayer {
       await this.discordPlayer.play(this.activeChannel as any, `tts:${text}`, {
         nodeOptions: {
           leaveOnEnd: true,
-          leaveOnEndCooldown: 60_000,
-          metadata: { guildId: this.guildId },
+          leaveOnEndCooldown: 300_000,
+          metadata: { guildId: this.guildId, textChannelId: this.textChannelId },
         },
       });
       this.logVoiceConnectionState("playTTS");
 
-      let reply = '';
-      if (this.discordPlayer.nodes.get(this.guildId)?.size === 0) {
-        reply = `Now playing TTS: ${text}`;
-      } else {
-        reply = `Added to queue TTS: ${text}`;
-      }
-
-      return reply;
+      return `Playing TTS: ${text}`;
     } catch (error) {
       console.error("Error playing TTS:", error);
       return "Failed to play TTS. Please check the text format.";

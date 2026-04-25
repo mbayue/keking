@@ -35,9 +35,17 @@ export const command: SlashCommand = {
 
         try {
             const player = getPlayer(interaction.guildId);
-            await player.joinChannel(member);
-            const result = await player.playTTS(text);
+            player.setTextChannel(interaction.channelId);
+            const joined = await player.joinChannel(member);
+            if (!joined) {
+                await interaction.reply({
+                    embeds: [createErrorEmbed('Failed to Join', 'Could not join the voice channel.')],
+                    flags: MessageFlags.Ephemeral,
+                });
+                return;
+            }
 
+            const result = await player.playTTS(text);
             await interaction.reply({
                 embeds: [createInfoEmbed({
                     title: 'TTS',

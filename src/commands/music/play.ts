@@ -26,6 +26,7 @@ export const command: SlashCommand = {
     }
 
     const player = getPlayer(interaction.guildId!);
+    player.setTextChannel(interaction.channelId);
 
     const joined = await player.joinChannel(member);
     if (!joined) {
@@ -39,17 +40,16 @@ export const command: SlashCommand = {
     await interaction.deferReply();
 
     const result = await player.play(url);
+    let title = 'Added to Queue';
 
-    let reply = ''
-    if (result.includes('Now playing:')) {
-      reply = 'Now playing:';
-    } else {
-      reply = 'Added to queue:';
+
+    if (player.getQueue().length === 0) {
+      title = 'Started Playing';
     }
 
     await interaction.editReply({
       embeds: [createInfoEmbed({
-        title: reply,
+        title: title,
         description: result,
       })],
     });

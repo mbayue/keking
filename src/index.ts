@@ -1,5 +1,4 @@
 import { Client, GatewayIntentBits } from "discord.js";
-import { generateDependencyReport } from "@discordjs/voice";
 import { config } from "./config.js";
 import { closeDb, initializeGuildStorage } from "./db/postgres.js";
 import { loadCommands } from "./loaders/commands.js";
@@ -10,8 +9,6 @@ import { initializePlayer } from "./utils/music.js";
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
 }) as BotClient;
-
-console.log("[voice] Dependency report:\n" + generateDependencyReport());
 
 client.musicPlayer = await initializePlayer(client);
 
