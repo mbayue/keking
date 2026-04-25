@@ -5,7 +5,7 @@ import { createInfoEmbed } from "../../utils/embeds.js";
 export const command: SlashCommand = {
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("Shows the starter commands included in this bot."),
+    .setDescription("Shows the available commands included in this bot."),
   async execute(interaction) {
     const embed = createInfoEmbed({
       title: "Available Commands",
@@ -14,10 +14,10 @@ export const command: SlashCommand = {
         {
           name: "Music",
           value:
-            "`/clear`, `/leave`, `/now`, `/pause`, `/play`, `/queue`, `/remove`, `/resume`, `/search`, `/skip`, `/stop`",
+            "`/clear`, `/leave`, `/loop`, `/lyrics`, `/now`, `/pause`, `/play`, `/queue`, `/remove`, `/resume`, `/search`, `/shuffle`, `/skip`, `/stop`, `/tts`",
         },
         { name: "Integrations", value: "`/pia`" },
-        { name: "Admin", value: "`/botstats`, `/guildinfo`, `/sync`" },
+        { name: "Admin", value: "`/botstats`, `/guildinfo`" },
       ],
     });
 
