@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { ActivityType, Client, GatewayIntentBits, PresenceUpdateStatus } from "discord.js";
 import { config } from "./config.js";
 import { closeDb, initializeGuildStorage } from "./db/postgres.js";
 import { loadCommands } from "./loaders/commands.js";
@@ -7,6 +7,15 @@ import type { BotClient } from "./types/client.js";
 import { initializePlayer } from "./utils/music.js";
 
 const client = new Client({
+  presence: {
+    activities: [
+      {
+        name: "Youtube",
+        type: ActivityType.Watching,
+      }
+    ],
+    status: PresenceUpdateStatus.Online,
+  },
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
