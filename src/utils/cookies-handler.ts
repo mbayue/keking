@@ -18,7 +18,7 @@ export async function youtubeCookieHandler(): Promise<string | null> {
 
         const cookiePath = path.join(process.cwd(), "cookies.txt");
 
-        fs.writeFileSync(cookiePath, cookies, "utf8");
+        fs.writeFileSync('/tmp/cookies.txt', cookies, "utf-8");
 
         console.info("[YouTube Cookie Handler] Cookies written successfully");
         return cookiePath;
