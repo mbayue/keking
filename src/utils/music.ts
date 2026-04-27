@@ -91,9 +91,14 @@ export class MusicPlayer {
       }
     }
 
-    // For Spotify URLs, preserve them as-is
-    if (trimmed.includes("open.spotify.com/")) {
-      return trimmed;
+    // For Spotify URLs, preserve them as-is only when the parsed host is exactly open.spotify.com
+    try {
+      const url = new URL(trimmed);
+      if (url.hostname.toLowerCase() === "open.spotify.com") {
+        return trimmed;
+      }
+    } catch {
+      // Not a URL; fall through and return as-is
     }
 
     // For other inputs, return as-is
