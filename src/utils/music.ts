@@ -93,7 +93,6 @@ export class MusicPlayer {
       }
     }
 
-    // For Spotify URLs, preserve them as-is only when the parsed host is exactly open.spotify.com
     try {
       const url = new URL(trimmed);
       if (url.hostname.toLowerCase() === "open.spotify.com") {
