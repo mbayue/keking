@@ -1,5 +1,5 @@
 import { Player, Track, QueueRepeatMode, QueryType } from "discord-player";
-import { SoundCloudExtractor, SpotifyExtractor } from "@discord-player/extractor";
+import { SpotifyExtractor, DefaultExtractors } from "@discord-player/extractor";
 import { YoutubeExtractor } from "discord-player-youtube";
 import type { GuildMember, VoiceBasedChannel } from "discord.js";
 import { Client } from "discord.js";
@@ -15,7 +15,7 @@ let player: Player | null = null;
 export async function initializePlayer(client: Client): Promise<Player> {
   if (!player) {
     player = new Player(client as any);
-    // await player.extractors.loadMulti(DefaultExtractors);
+    await player.extractors.loadMulti(DefaultExtractors);
     await player.extractors.register(YoutubeExtractor, {
       cookie: config.ytCookies,
     });
@@ -23,7 +23,6 @@ export async function initializePlayer(client: Client): Promise<Player> {
       clientId: config.spotifyClientId,
       clientSecret: config.spotifyClientSecret,
     });
-    await player.extractors.register(SoundCloudExtractor, {});
     await player.extractors.register(TTSExtractor, {
       language: "en",
       slow: false
