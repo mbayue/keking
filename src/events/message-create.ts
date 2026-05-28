@@ -50,7 +50,6 @@ async function previewSocialLinks(message: Message): Promise<void> {
   }
 
   const links = extractSocialMirrorLinks(message.content);
-
   if (links.length === 0) {
     return;
   }
@@ -65,18 +64,19 @@ async function previewSocialLinks(message: Message): Promise<void> {
     flags: MessageFlags.SuppressNotifications,
   });
 
-  const me = message.guild.members.me;
-  if (!me) {
-    return;
+  try {
+    const me = message.guild.members.me;
+    if (me) {
+      assertBotHasChannelPermissions(
+        message.channel,
+        me,
+        [PermissionFlagsBits.ManageMessages],
+      );
+      await message.suppressEmbeds(true);
+    }
+  } catch (permsError) {
+    console.warn("[SOCIAL PREVIEW] Could not suppress embeds:", permsError);
   }
-
-  assertBotHasChannelPermissions(
-    message.channel,
-    me,
-    [PermissionFlagsBits.ManageMessages],
-  );
-
-  await message.suppressEmbeds(true);
 }
 
 export const event: BotEvent = {
