@@ -3,159 +3,104 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keking - Privacy Policy</title>
+    <title>Privacy Policy - Keking</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body id="top">
+  <body>
     <nav class="navbar">
       <div class="container">
-        <h1 class="logo"><a href="index.html#top">Keking</a></h1>
+        <div class="nav-brand">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <a href="index.html" class="logo">Keking</a>
+        </div>
+        
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"></path>
+          </svg>
+        </button>
+
         <ul class="nav-links">
           <li><a href="index.html#features">Features</a></li>
-          <li><a href="index.html#commands">Commands</a></li>
+          <li><a href="commands.html">Commands</a></li>
           <li><a href="index.html#setup">Setup</a></li>
-          <li><a href="privacy.html">Privacy</a></li>
-          <li><a href="toc.html">Terms</a></li>
-          <li>
-            <a href="https://github.com/mbayue/keking" target="_blank"
-              >GitHub</a
-            >
-          </li>
+          <li><a href="https://github.com/mbayue/keking" target="_blank">GitHub</a></li>
+          <li><a href="https://s.id/keking" class="btn btn-primary" target="_blank">Invite Bot</a></li>
         </ul>
       </div>
     </nav>
 
-    <section class="policy-hero">
-      <div class="container policy-intro">
-        <!-- <p class="policy-eyebrow">Legal</p> -->
-        <h2>Privacy Policy</h2>
-        <p>
-          This policy explains what Keking processes, what it stores, and how
-          data is used when the bot is added to a Discord server.
-        </p>
-        <!-- <p class="policy-effective">Effective date: April 26, 2026</p> -->
-      </div>
-    </section>
-
-    <main class="policy-page">
+    <div class="policy-header">
       <div class="container">
-        <section class="policy-card">
-          <p>
-            Keking is a Discord bot that provides music playback,
-            text-to-speech, utility commands, social-link preview assistance,
-            and server helper features.
-          </p>
-
-          <h3>1. Information We Process</h3>
-          <p>
-            Keking may process the following information when used inside a
-            Discord server:
-          </p>
-          <ul>
-            <li>Server IDs</li>
-            <li>Server names</li>
-            <li>User-submitted slash command inputs</li>
-            <li>
-              Message content in servers where the bot is installed, only when
-              needed for supported bot features
-            </li>
-            <li>Voice channel state needed to join and play audio</li>
-            <li>
-              Interaction metadata required for slash commands and button
-              interactions
-            </li>
-          </ul>
-
-          <h3>2. How Information Is Used</h3>
-          <p>
-            Keking uses this information only to provide bot functionality
-            inside Discord servers, including:
-          </p>
-          <ul>
-            <li>Responding to slash commands</li>
-            <li>Playing music and text-to-speech audio in voice channels</li>
-            <li>
-              Detecting supported social-media links in messages and replying
-              with alternative preview links
-            </li>
-            <li>
-              Responding to direct bot mentions where implemented in the bot
-              logic
-            </li>
-            <li>
-              Storing limited guild-level operational data for setup and command
-              deployment
-            </li>
-          </ul>
-
-          <h3>3. Stored Data</h3>
-          <p>
-            Keking stores limited server-level operational data outside Discord
-            only when database storage is enabled. This may include:
-          </p>
-          <ul>
-            <li>Guild ID</li>
-            <li>Guild name</li>
-            <li>Command deployment hash</li>
-            <li>Join and update timestamps</li>
-          </ul>
-          <p>
-            Keking does not intentionally store message content, presence
-            history, or member-profile datasets in its database as part of
-            normal operation.
-          </p>
-
-          <h3>4. Message Content</h3>
-          <p>
-            Keking may read message content in servers only for features that
-            require it, such as supported social-link preview replies and
-            mention-based responses. Message content is processed in real time
-            to perform those features and is not used for advertising or
-            profiling.
-          </p>
-
-          <h3>5. AI and Model Training</h3>
-          <p>
-            Keking does not use message content or other Discord data to train
-            machine-learning or AI models.
-          </p>
-
-          <h3>6. Data Sharing</h3>
-          <p>
-            Keking does not sell user data and does not share Discord data with
-            third parties except where necessary to provide requested
-            functionality, such as querying supported external services for
-            music, lyrics, or NovelPia search results.
-          </p>
-
-          <h3>7. Data Retention</h3>
-          <p>
-            Operational guild data is retained only as long as needed to support
-            the bot's functionality. If the bot leaves a server and database
-            support is enabled, related stored guild records may be deleted.
-          </p>
-
-          <h3>8. Your Choices</h3>
-          <p>
-            Server owners and administrators control whether to add Keking to
-            their servers. If you no longer want Keking to process data in your
-            server, remove the bot from the server.
-          </p>
-
-          <h3>9. Contact</h3>
-          <p>
-            For questions about this Privacy Policy or data handling, contact
-            the bot operator through the project repository or support contact
-            associated with the bot listing.
-          </p>
-        </section>
+        <h1>Privacy Policy</h1>
+        <p>What Keking reads, what it stores, and what happens to your data.</p>
       </div>
-    </main>
+    </div>
 
-    <footer>
+    <div class="container">
+      <div class="policy-content">
+        <p>Keking plays music, speaks text, and fixes social media links. It needs basic data to do this.</p>
+
+        <h3>1. Data We Read</h3>
+        <p>When you invite Keking, the bot reads:</p>
+        <ul>
+          <li>Server IDs and names</li>
+          <li>Your slash commands</li>
+          <li>Message text, but only to fix links or answer mentions</li>
+          <li>Voice channel status so it can join and play audio</li>
+        </ul>
+
+        <h3>2. How We Use It</h3>
+        <p>We use this data to make the bot work. Specifically:</p>
+        <ul>
+          <li>Answering slash commands</li>
+          <li>Playing your music and TTS requests</li>
+          <li>Detecting Twitter or Instagram links to reply with working previews</li>
+        </ul>
+
+        <h3>3. Data We Store</h3>
+        <p>If you enable the database, Keking stores basic server info:</p>
+        <ul>
+          <li>Guild ID and name</li>
+          <li>Command hash (to know if commands need updating)</li>
+          <li>Join date</li>
+        </ul>
+        <p>Keking stores no message text, no user profiles, and no chat history.</p>
+
+        <h3>4. Message Content</h3>
+        <p>Keking scans messages in real time to fix bad social media links. We do not save this text. We do not use it to build profiles.</p>
+
+        <h3>5. AI Training</h3>
+        <p>We do not train AI models on your messages or data.</p>
+
+        <h3>6. Data Sharing</h3>
+        <p>We sell nothing. We share nothing. Keking only sends queries to external APIs (like Genius or YouTube) when you ask it to find lyrics or songs.</p>
+
+        <h3>7. Deletion</h3>
+        <p>Kick the bot, and it stops reading data. If you have the database running, it deletes your server's record.</p>
+
+        <h3>8. Contact</h3>
+        <p>Create an issue on GitHub if you need help with your data.</p>
+      </div>
+    </div>
+
+    <footer class="footer">
       <div class="container">
-        <p>&copy; 2026 Keking Discord Bot. All rights reserved.</p>
-        <p><a href="privacy.html">Privacy Policy</a> | <a href="toc.html">Terms of Conditions</a></p>
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>Keking Discord Bot</h3>
+            <p>Built for Discord servers that need music, lyrics, and utilities.</p>
+          </div>
+          <div class="footer-links">
+            <a href="https://github.com/mbayue/keking">GitHub</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="toc.html">Terms</a>
+          </div>
+        </div>
       </div>
     </footer>
   </body>
