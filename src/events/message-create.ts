@@ -94,30 +94,28 @@ async function previewSocialLinks(message: Message): Promise<void> {
 
 export const event: BotEvent = {
   name: Events.MessageCreate,
-  execute(message) {
+  async execute(message) {
     const msg = message as Message;
+    // return handleMentionReply(msg)
+    //   .then((handled) => {
+    // if (!handled) {
+    try {
+      return await previewSocialLinks(msg);
+    } catch (error) {
+      console.error("MessageCreate handler failed:", error);
 
-    return handleMentionReply(msg)
-      .then((handled) => {
-        if (!handled) {
-          return previewSocialLinks(msg);
-        }
-      })
-      .catch(async (error) => {
-        console.error("MessageCreate handler failed:", error);
+      if (error instanceof MissingBotPermissionsError && msg.inGuild()) {
+        await msg.reply({
+          content: createMissingPermissionsMessage(error),
+          allowedMentions: {
+            repliedUser: false,
+          },
+          flags: MessageFlags.SuppressNotifications,
+        }).catch(() => null);
+        return;
+      }
 
-        if (error instanceof MissingBotPermissionsError && msg.inGuild()) {
-          await msg.reply({
-            content: createMissingPermissionsMessage(error),
-            allowedMentions: {
-              repliedUser: false,
-            },
-            flags: MessageFlags.SuppressNotifications,
-          }).catch(() => null);
-          return;
-        }
-
-        throw error;
-      });
+      throw error;
+    }
   },
 };

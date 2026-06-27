@@ -32,7 +32,7 @@ export const event: BotEvent = {
       console.log("Syncing guilds to database...");
       for (const guild of client.guilds.cache.values()) {
         try {
-          // await upsertGuild(guild.id, guild.name);
+          await upsertGuild(guild.id, guild.name);
           console.log(`Synced guild: ${guild.name} (${guild.id})`);
         } catch (error) {
           console.error(`Failed to sync guild ${guild.name}:`, error);

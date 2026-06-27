@@ -3,182 +3,294 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keking - Discord Music Bot</title>
+    <title>Keking Discord Bot</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body id="top">
+  <body>
     <nav class="navbar">
       <div class="container">
-        <h1 class="logo"><a href="#top">Keking</a></h1>
+        <div class="nav-brand">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <a href="index.html" class="logo">Keking</a>
+        </div>
+        
+        <button class="mobile-menu-btn" aria-label="Toggle menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"></path>
+          </svg>
+        </button>
+
         <ul class="nav-links">
           <li><a href="#features">Features</a></li>
-          <li><a href="#commands">Commands</a></li>
-          <li><a href="#setup">Setup</a></li>
-          <li><a href="privacy.html">Privacy</a></li>
-          <li>
-            <a href="https://github.com/bayue48/keking" target="_blank"
-              >GitHub</a
-            >
-          </li>
+          <li><a href="commands.html">Commands</a></li>
+          <li><a href="index.html#setup">Setup</a></li>
+          <li><a href="https://github.com/mbayue/keking" target="_blank">GitHub</a></li>
+          <li><a href="https://s.id/keking" class="btn btn-primary" target="_blank">Invite Bot</a></li>
         </ul>
       </div>
     </nav>
 
     <section class="hero">
       <div class="container">
-        <h2>Welcome to Keking</h2>
-        <p>A powerful Discord music bot with lyrics, playlists, and more</p>
-        <div class="hero-actions">
-          <a href="#setup" class="btn btn-primary">Get Started</a>
-          <a
-            href="https://s.id/keking"
-            class="btn btn-primary"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Try Me</a
-          >
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="features">
-      <div class="container">
-        <h2>Features</h2>
-        <div class="feature-grid">
-          <div class="feature-card">
-            <h3>📱 Social Media Previews</h3>
-            <p>
-              Embed and preview content from Twitter/X, Instagram, Facebook, and
-              Reddit
-            </p>
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Keking keeps your Discord server playing.</h1>
+            <p>Music playback, lyrics, NovelPia search, previews, and utility commands in one lightweight Discord bot.</p>
+            <div class="hero-actions">
+              <a href="https://s.id/keking" target="_blank" class="btn btn-primary">Invite Bot</a>
+              <a href="commands.html" class="btn btn-secondary">View Commands</a>
+            </div>
+            
+            <div class="hero-sample-card">
+              <div class="sample-msg">
+                <div class="sample-author">Try it in Discord</div>
+                <div class="sample-content">/play yorushika spring thief</div>
+              </div>
+              <div class="sample-msg">
+                <div class="sample-author bot">Keking</div>
+                <div class="sample-content">
+                  Now playing: Yorushika — Spring Thief<br>
+                  Queue: 8 tracks · Lyrics available
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="feature-card">
-            <h3>📚 Novel Search (PIA)</h3>
-            <p>
-              Search and discover novels from NovelPia with information about
-              views, likes, and episode counts
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>🎵 Music Streaming</h3>
-            <p>
-              Play music from popular music streaming services with high-quality
-              audio
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>📝 Lyrics Display</h3>
-            <p>View lyrics for currently playing tracks using Genius API</p>
-          </div>
-          <div class="feature-card">
-            <h3>🎤 Text-to-Speech</h3>
-            <p>Convert text messages to speech directly in voice channels</p>
-          </div>
-          <div class="feature-card">
-            <h3>🔍 Search</h3>
-            <p>Search for songs and view top 5 results instantly</p>
+          
+          <div class="hero-visual">
+            <div class="hero-image-card">
+              <img src="hero-bg.jpg" alt="Keking Mascot" />
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="commands" class="commands">
+    <section id="features">
       <div class="container">
-        <h2>Commands</h2>
-        <p>Quick reference of available commands:</p>
-        <table class="commands-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Commands</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Music</td>
-              <td>
-                /play, /skip, /pause, /resume, /stop, /queue, /shuffle, /remove,
-                /clear
-              </td>
-            </tr>
-            <tr>
-              <td>Playlist</td>
-              <td>Playlist management and favorites</td>
-            </tr>
-            <tr>
-              <td>Lyrics</td>
-              <td>/lyrics - Display lyrics for current or specified track</td>
-            </tr>
-            <tr>
-              <td>Text-to-Speech</td>
-              <td>/tts - Convert text to speech</td>
-            </tr>
-            <tr>
-              <td>Admin</td>
-              <td>/botstats, /guildinfo</td>
-            </tr>
-            <tr>
-              <td>Utility</td>
-              <td>/help, /ping, /server</td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          <a href="commands.html" class="btn btn-secondary"
-            >View Full Command List</a
-          >
-        </p>
+        <div class="section-header">
+          <h2>Features</h2>
+          <p>Everything you need for a better server experience.</p>
+        </div>
+        
+        <div class="features-grid">
+          <div class="feature-card highlight">
+            <div class="feature-icon">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+            <div>
+              <h3>Music</h3>
+              <p>Play, queue, skip, shuffle, and manage tracks from supported sources.</p>
+            </div>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <h3>Lyrics</h3>
+            <p>Show lyrics for the current track or search manually.</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <h3>NovelPia</h3>
+            <p>Search NovelPia titles with views, likes, and episode counts.</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <path d="M8 12h8m-8-4h8m-8 8h4"></path>
+              </svg>
+            </div>
+            <h3>Social Previews</h3>
+            <p>Preview links from X, Instagram, Facebook, and Reddit.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2m7 11v-4m-4 4h8"></path>
+              </svg>
+            </div>
+            <h3>Text-to-Speech</h3>
+            <p>Convert text messages into voice channel audio.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.3-4.3"></path>
+              </svg>
+            </div>
+            <h3>Search</h3>
+            <p>Find songs quickly and show top matches.</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="setup" class="setup">
+    <section class="home-commands">
       <div class="container">
-        <h2>Setup & Installation</h2>
-        <div class="setup-steps">
-          <div class="step">
-            <h3>1. Prerequisites</h3>
-            <ul>
-              <li>Node.js 18+ and pnpm</li>
-              <li>Discord bot token</li>
-              <li>PostgreSQL (or use bundled Docker Compose)</li>
-              <li>YouTube cookies file (for music)</li>
-            </ul>
+        <div class="section-header">
+          <h2>Commands</h2>
+          <p>Quick reference for daily usage.</p>
+        </div>
+        
+        <div class="cmd-groups">
+          <div class="cmd-group">
+            <h3>Music</h3>
+            <div>
+              <span class="cmd-pill">/play</span>
+              <span class="cmd-pill">/skip</span>
+              <span class="cmd-pill">/pause</span>
+              <span class="cmd-pill">/queue</span>
+              <span class="cmd-pill">/shuffle</span>
+            </div>
+          </div>
+          
+          <div class="cmd-group">
+            <h3>Lyrics</h3>
+            <div>
+              <span class="cmd-pill">/lyrics</span>
+            </div>
+          </div>
+          
+          <div class="cmd-group">
+            <h3>Utility</h3>
+            <div>
+              <span class="cmd-pill">/help</span>
+              <span class="cmd-pill">/ping</span>
+              <span class="cmd-pill">/server</span>
+            </div>
           </div>
 
-          <div class="step">
-            <h3>2. Environment Setup</h3>
-            <pre><code>cp .env.example .env</code></pre>
-            <p>Fill in required values:</p>
-            <ul>
-              <li><code>DISCORD_TOKEN</code> - Your bot token</li>
-              <li><code>DISCORD_CLIENT_ID</code> - Your bot client ID</li>
-              <li><code>DATABASE_URL</code> - PostgreSQL connection string</li>
-              <li><code>YOUTUBE_COOKIES</code> - Youtube cookies string</li>
-            </ul>
+          <div class="cmd-group">
+            <h3>Admin</h3>
+            <div>
+              <span class="cmd-pill">/botstats</span>
+              <span class="cmd-pill">/guildinfo</span>
+            </div>
           </div>
+        </div>
+        
+        <div class="cmd-action">
+          <a href="commands.html" class="btn btn-secondary">Open full command reference</a>
+        </div>
+      </div>
+    </section>
 
-          <div class="step">
-            <h3>3. Using Docker (Recommended)</h3>
+    <section id="setup">
+      <div class="container">
+        <div class="section-header">
+          <h2>Setup</h2>
+          <p>Deploy Keking to your own infrastructure.</p>
+        </div>
+        
+        <div class="setup-tabs">
+          <button class="setup-tab active" data-target="setup-docker">Docker</button>
+          <button class="setup-tab" data-target="setup-manual">Manual</button>
+          <button class="setup-tab" data-target="setup-env">Environment</button>
+        </div>
+        
+        <div id="setup-docker" class="setup-content-pane active">
+          <p>Run using the bundled Docker Compose configuration.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
             <pre><code>pnpm docker:up</code></pre>
-            <p>This will start the bot and PostgreSQL in Docker containers.</p>
-            <p>Check logs with: <code>pnpm docker:logs</code></p>
           </div>
+        </div>
 
-          <div class="step">
-            <h3>4. Manual Installation</h3>
-            <pre><code>pnpm install</code></pre>
-            <pre><code>pnpm dev</code></pre>
-            <p>Run the bot locally without Docker.</p>
+        <div id="setup-manual" class="setup-content-pane">
+          <p>Install dependencies and run the bot locally.</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code>pnpm install
+pnpm dev</code></pre>
+          </div>
+        </div>
+
+        <div id="setup-env" class="setup-content-pane">
+          <p>Required environment variables in <code>.env</code> file:</p>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+            <pre><code>DISCORD_TOKEN=
+DISCORD_CLIENT_ID=
+DATABASE_URL=
+YOUTUBE_COOKIES=</code></pre>
           </div>
         </div>
       </div>
     </section>
 
-    <footer>
+    <footer class="footer">
       <div class="container">
-        <p>&copy; 2026 Keking Discord Bot. All rights reserved.</p>
-        <p><a href="privacy.html">Privacy Policy</a></p>
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>Keking Discord Bot</h3>
+            <p>Built for Discord servers that need music, lyrics, and utilities.</p>
+          </div>
+          <div class="footer-links">
+            <a href="https://github.com/mbayue/keking" target="_blank">GitHub</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="toc.html">Terms</a>
+          </div>
+        </div>
       </div>
     </footer>
+
+    <script>
+      // Mobile menu toggle
+      const menuBtn = document.querySelector('.mobile-menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+      
+      menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+
+      // Setup tabs
+      const tabs = document.querySelectorAll('.setup-tab');
+      const panes = document.querySelectorAll('.setup-content-pane');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          panes.forEach(p => p.classList.remove('active'));
+          
+          tab.classList.add('active');
+          document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+        });
+      });
+
+      // Copy buttons
+      function copyToClipboard(button) {
+        const codeBlock = button.parentElement.querySelector('code');
+        navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+          const originalText = button.innerText;
+          button.innerText = 'Copied!';
+          setTimeout(() => {
+            button.innerText = originalText;
+          }, 2000);
+        });
+      }
+    </script>
   </body>
 </html>

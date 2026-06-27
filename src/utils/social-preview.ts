@@ -39,6 +39,7 @@ function normalizeFacebookUrl(rawUrl: string): string | null {
 function normalizeRedditUrl(rawUrl: string): string | null {
   try {
     const url = new URL(rawUrl);
+    const scraperDomain = config.redditScraperDomain;
 
     if (
       url.hostname === "reddit.com" ||
@@ -46,7 +47,7 @@ function normalizeRedditUrl(rawUrl: string): string | null {
       url.hostname === "old.reddit.com" ||
       url.hostname === "redd.it"
     ) {
-      url.hostname = "rxddit.com";
+      url.hostname = scraperDomain;
       return url.toString();
     }
 
@@ -82,21 +83,21 @@ export function extractSocialMirrorLinks(content: string): string[] {
     links.set(`${normalizedKind}/${shortcode}`, normalizeInstagramUrl(normalizedKind, shortcode));
   }
 
-  // for (const match of content.matchAll(REDDIT_URL_PATTERN)) {
-  //   const rawUrl = match[0];
+  for (const match of content.matchAll(REDDIT_URL_PATTERN)) {
+    const rawUrl = match[0];
 
-  //   if (!rawUrl) {
-  //     continue;
-  //   }
+    if (!rawUrl) {
+      continue;
+    }
 
-  //   const normalizedUrl = normalizeRedditUrl(rawUrl);
+    const normalizedUrl = normalizeRedditUrl(rawUrl);
 
-  //   if (!normalizedUrl) {
-  //     continue;
-  //   }
+    if (!normalizedUrl) {
+      continue;
+    }
 
-  //   links.set(normalizedUrl, normalizedUrl);
-  // }
+    links.set(normalizedUrl, normalizedUrl);
+  }
 
   for (const match of content.matchAll(FACEBOOK_URL_PATTERN)) {
     const rawUrl = match[0];
