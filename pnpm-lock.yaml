@@ -48,8 +48,8 @@ importers:
         specifier: ^8.20.0
         version: 8.20.0
       youtube-dl-exec:
-        specifier: ^3.1.5
-        version: 3.1.5
+        specifier: ^3.1.7
+        version: 3.1.7
     devDependencies:
       '@types/node':
         specifier: ^25.9.1
@@ -2249,8 +2249,8 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.4:
-    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
+  semver@7.8.0:
+    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -2543,8 +2543,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  youtube-dl-exec@3.1.5:
-    resolution: {integrity: sha512-dZIjtjaw8HDEhM+MtGP/ETdQfwN5HE5ykXGMT17r8zFJg9geFm71yW58Zc27ZR5xixyrv4JKfi7CthiHldFL9Q==}
+  youtube-dl-exec@3.1.7:
+    resolution: {integrity: sha512-NlbHVcnoj1qmnHe2OFAh7zsZT4+pC2RdvWLiGgHWI9Jef+EIFzG3uUh32G745l3arxAnGsVEKyODEJClTwf5Kw==}
     engines: {node: '>= 18'}
 
   youtubei.js@17.0.1:
@@ -3363,7 +3363,7 @@ snapshots:
   binary-version-check@6.1.0:
     dependencies:
       binary-version: 7.1.0
-      semver: 7.7.4
+      semver: 7.8.0
       semver-truncate: 3.0.0
 
   binary-version@7.1.0:
@@ -4391,12 +4391,12 @@ snapshots:
 
   semver-truncate@3.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.0
 
   semver@6.3.1:
     optional: true
 
-  semver@7.7.4: {}
+  semver@7.8.0: {}
 
   semver@7.8.1:
     optional: true
@@ -4647,7 +4647,7 @@ snapshots:
   yallist@4.0.0:
     optional: true
 
-  youtube-dl-exec@3.1.5:
+  youtube-dl-exec@3.1.7:
     dependencies:
       binary-version-check: 6.1.0
       dargs: 7.0.0
