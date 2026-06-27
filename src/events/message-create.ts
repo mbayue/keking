@@ -7,6 +7,8 @@ import {
   assertBotHasChannelPermissions,
   createMissingPermissionsMessage,
 } from "../utils/permissions.js";
+import { isSocialPreviewEnabled } from "../db/postgres.js";
+import { config } from "../config.js";
 
 const mentionReplies = [
   "iya beb",
@@ -23,7 +25,7 @@ async function handleMentionReply(message: Message): Promise<boolean> {
   const botId = message.client.user?.id;
   const authorId = message.author.id;
 
-  if (!botId || authorId !== "330320305606230016") {
+  if (!botId || authorId !== config.botOwnerId) {
     return false;
   }
 
@@ -49,8 +51,18 @@ async function previewSocialLinks(message: Message): Promise<void> {
     return;
   }
 
-  const links = extractSocialMirrorLinks(message.content);
+  // Fail-secure: If database query fails, we default to disabled (no previews)
+  try {
+    const isEnabled = await isSocialPreviewEnabled(message.guild.id);
+    if (!isEnabled) {
+      return;
+    }
+  } catch (error) {
+    console.error("[SOCIAL PREVIEW] Failed to check database setting (failing secure):", error);
+    return;
+  }
 
+  const links = extractSocialMirrorLinks(message.content);
   if (links.length === 0) {
     return;
   }
@@ -65,46 +77,45 @@ async function previewSocialLinks(message: Message): Promise<void> {
     flags: MessageFlags.SuppressNotifications,
   });
 
-  const me = message.guild.members.me;
-  if (!me) {
-    return;
+  try {
+    const me = message.guild.members.me;
+    if (me) {
+      assertBotHasChannelPermissions(
+        message.channel,
+        me,
+        [PermissionFlagsBits.ManageMessages],
+      );
+      await message.suppressEmbeds(true);
+    }
+  } catch (permsError) {
+    console.warn("[SOCIAL PREVIEW] Could not suppress embeds:", permsError);
   }
-
-  assertBotHasChannelPermissions(
-    message.channel,
-    me,
-    [PermissionFlagsBits.ManageMessages],
-  );
-
-  await message.suppressEmbeds(true);
 }
 
 export const event: BotEvent = {
   name: Events.MessageCreate,
-  execute(message) {
+  async execute(message) {
     const msg = message as Message;
+    // return handleMentionReply(msg)
+    //   .then((handled) => {
+    // if (!handled) {
+    try {
+      return await previewSocialLinks(msg);
+    } catch (error) {
+      console.error("MessageCreate handler failed:", error);
 
-    return handleMentionReply(msg)
-      .then((handled) => {
-        if (!handled) {
-          return previewSocialLinks(msg);
-        }
-      })
-      .catch(async (error) => {
-        console.error("MessageCreate handler failed:", error);
+      if (error instanceof MissingBotPermissionsError && msg.inGuild()) {
+        await msg.reply({
+          content: createMissingPermissionsMessage(error),
+          allowedMentions: {
+            repliedUser: false,
+          },
+          flags: MessageFlags.SuppressNotifications,
+        }).catch(() => null);
+        return;
+      }
 
-        if (error instanceof MissingBotPermissionsError && msg.inGuild()) {
-          await msg.reply({
-            content: createMissingPermissionsMessage(error),
-            allowedMentions: {
-              repliedUser: false,
-            },
-            flags: MessageFlags.SuppressNotifications,
-          }).catch(() => null);
-          return;
-        }
-
-        throw error;
-      });
+      throw error;
+    }
   },
 };

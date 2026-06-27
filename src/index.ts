@@ -29,7 +29,7 @@ client.musicPlayer = await initializePlayer(client);
 client.commands = new Map((await loadCommands()).entries());
 
 if (config.databaseUrl) {
-  client.db = await initializeGuildStorage();
+  await initializeGuildStorage();
 }
 
 await loadEvents(client);

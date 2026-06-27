@@ -3,6 +3,7 @@ import { Events, type Client } from "discord.js";
 import { config } from "../config.js";
 import type { BotEvent } from "../structures/event.js";
 import { deployCommands, formatDeployReport } from "../utils/deploy-commands.js";
+import { upsertGuild } from "../db/postgres.js";
 
 export const event: BotEvent = {
   name: Events.ClientReady,
@@ -20,13 +21,24 @@ export const event: BotEvent = {
       console.log(formatDeployReport(result, null));
     }
 
-    if (!isProduction) {
+     if (!isProduction) {
       console.log(`Development mode: deploying commands for guild ${config.guildId}...`);
       const result = await deployCommands({ guildId: config.guildId });
-      console.log(formatDeployReport(result, config.guildId));
+      const constResult = formatDeployReport(result, config.guildId);
+      console.log(constResult);
     }
 
-    if (!config.databaseUrl) {
+    if (config.databaseUrl) {
+      console.log("Syncing guilds to database...");
+      for (const guild of client.guilds.cache.values()) {
+        try {
+          await upsertGuild(guild.id, guild.name);
+          console.log(`Synced guild: ${guild.name} (${guild.id})`);
+        } catch (error) {
+          console.error(`Failed to sync guild ${guild.name}:`, error);
+        }
+      }
+    } else {
       console.warn("DATABASE_URL is not set. Guild persistence is disabled.");
     }
   },

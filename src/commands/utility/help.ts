@@ -17,7 +17,7 @@ export const command: SlashCommand = {
             "`/clear`, `/leave`, `/loop`, `/lyrics`, `/now`, `/pause`, `/play`, `/queue`, `/remove`, `/resume`, `/search`, `/shuffle`, `/skip`, `/stop`, `/tts`",
         },
         { name: "Integrations", value: "`/pia`" },
-        { name: "Admin", value: "`/botstats`, `/guildinfo`" },
+        { name: "Admin", value: "`/botstats`, `/guildinfo`, `/social-preview`" },
       ],
     });
 

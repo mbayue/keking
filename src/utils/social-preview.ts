@@ -1,8 +1,10 @@
+import { config } from "../config.js";
+
 const STATUS_URL_PATTERN =
   /https?:\/\/(?:www\.)?(?:x\.com|twitter\.com|mobile\.twitter\.com)\/([A-Za-z0-9_]{1,15})\/status\/(\d+)(?:\?[^\s]*)?/gi;
 const INSTAGRAM_URL_PATTERN =
   /https?:\/\/(?:www\.)?instagram\.com\/(p|reel|reels)\/([A-Za-z0-9_-]+)(?:\/)?(?:\?[^\s]*)?/gi;
-const FACEBOOK_URL_PATTERN = /https?:\/\/(?:www\.|m\.)?facebook\.com\/[^\s]+|https?:\/\/fb\.watch\/[^\s]+/gi;
+export const FACEBOOK_URL_PATTERN = /https?:\/\/(?:[a-zA-Z0-9-]+\.)?facebook\.com\/[^\s]+|https?:\/\/fb\.watch\/[^\s]+/gi;
 const REDDIT_URL_PATTERN = /https?:\/\/(?:www\.|old\.)?reddit\.com\/[^\s]+|https?:\/\/redd\.it\/[^\s]+/gi;
 
 function normalizeUrl(username: string, statusId: string): string {
@@ -16,15 +18,16 @@ function normalizeInstagramUrl(kind: string, shortcode: string): string {
 function normalizeFacebookUrl(rawUrl: string): string | null {
   try {
     const url = new URL(rawUrl);
+    const scraperDomain = config.facebookScraperDomain;
 
-    if (
-      url.hostname === "facebook.com" ||
-      url.hostname === "www.facebook.com" ||
-      url.hostname === "m.facebook.com" ||
-      url.hostname === "fb.watch"
-    ) {
-      url.hostname = "facebed.com";
+    if (url.hostname === "facebook.com" || url.hostname.endsWith(".facebook.com")) {
+      url.hostname = scraperDomain;
       return url.toString();
+    }
+
+    if (url.hostname === "fb.watch") {
+      const path = url.pathname;
+      return `https://${scraperDomain}/fbwatch${path}${url.search}`;
     }
 
     return null;
@@ -36,6 +39,7 @@ function normalizeFacebookUrl(rawUrl: string): string | null {
 function normalizeRedditUrl(rawUrl: string): string | null {
   try {
     const url = new URL(rawUrl);
+    const scraperDomain = config.redditScraperDomain;
 
     if (
       url.hostname === "reddit.com" ||
@@ -43,7 +47,7 @@ function normalizeRedditUrl(rawUrl: string): string | null {
       url.hostname === "old.reddit.com" ||
       url.hostname === "redd.it"
     ) {
-      url.hostname = "rxddit.com";
+      url.hostname = scraperDomain;
       return url.toString();
     }
 
@@ -79,22 +83,6 @@ export function extractSocialMirrorLinks(content: string): string[] {
     links.set(`${normalizedKind}/${shortcode}`, normalizeInstagramUrl(normalizedKind, shortcode));
   }
 
-  // for (const match of content.matchAll(FACEBOOK_URL_PATTERN)) {
-  //   const rawUrl = match[0];
-
-  //   if (!rawUrl) {
-  //     continue;
-  //   }
-
-  //   const normalizedUrl = normalizeFacebookUrl(rawUrl);
-
-  //   if (!normalizedUrl) {
-  //     continue;
-  //   }
-
-  //   links.set(normalizedUrl, normalizedUrl);
-  // }
-
   for (const match of content.matchAll(REDDIT_URL_PATTERN)) {
     const rawUrl = match[0];
 
@@ -103,6 +91,22 @@ export function extractSocialMirrorLinks(content: string): string[] {
     }
 
     const normalizedUrl = normalizeRedditUrl(rawUrl);
+
+    if (!normalizedUrl) {
+      continue;
+    }
+
+    links.set(normalizedUrl, normalizedUrl);
+  }
+
+  for (const match of content.matchAll(FACEBOOK_URL_PATTERN)) {
+    const rawUrl = match[0];
+
+    if (!rawUrl) {
+      continue;
+    }
+
+    const normalizedUrl = normalizeFacebookUrl(rawUrl);
 
     if (!normalizedUrl) {
       continue;

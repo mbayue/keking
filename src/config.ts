@@ -18,4 +18,7 @@ export const config = {
   ytCookies: process.env.YOUTUBE_COOKIES || '',
   spotifyClientId: process.env.SPOTIFY_CLIENT_ID || '',
   spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET || '',
+  facebookScraperDomain: process.env.FACEBOOK_SCRAPER_DOMAIN || "xfa.gsdm.site",
+  redditScraperDomain: process.env.REDDIT_SCRAPER_DOMAIN || "xrd.gsdm.site",
+  botOwnerId: process.env.BOT_OWNER_ID || "330320305606230016",
 };
