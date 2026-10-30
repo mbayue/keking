@@ -56,14 +56,15 @@ export const command: SlashCommand = {
                 })],
             });
 
-            for (let i = 1; i < chunks.length; i++) {
-                await interaction.followUp({
+            const followUps = chunks.slice(1).map((chunk, index) =>
+                interaction.followUp({
                     embeds: [createInfoEmbed({
-                        title: `🎵 Lyrics (Part ${i + 1})`,
-                        description: chunks[i] || 'No content',
+                        title: `🎵 Lyrics (Part ${index + 2})`,
+                        description: chunk || 'No content',
                     })],
-                });
-            }
+                }),
+            );
+            await Promise.all(followUps);
         }
     },
 };

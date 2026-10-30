@@ -31,7 +31,7 @@ If `DATABASE_URL` is omitted in Docker Compose, it defaults to the bundled `db` 
 ## 2. Start the stack
 
 ```bash
-pnpm docker:up
+bun run docker:up
 ```
 
 Or directly:
@@ -43,13 +43,13 @@ docker compose up -d --build
 ## 3. Check logs
 
 ```bash
-pnpm docker:logs
+bun run docker:logs
 ```
 
 ## 4. Stop the stack
 
 ```bash
-pnpm docker:down
+bun run docker:down
 ```
 
 ## Notes

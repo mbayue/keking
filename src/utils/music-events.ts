@@ -3,7 +3,7 @@ import { Player, GuildQueueEvent, QueueRepeatMode } from "discord-player";
 import { createInfoEmbed } from "./embeds.js";
 import { config } from "../config.js";
 
-export async function registerMusicEvents(player: Player, client: Client): Promise<void> {
+export function registerMusicEvents(player: Player, client: Client): void {
     console.log("core || ", player.scanDeps());
 
     player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
@@ -20,9 +20,10 @@ export async function registerMusicEvents(player: Player, client: Client): Promi
             if (!channel || !('isTextBased' in channel) || !channel.isTextBased() || !('send' in channel)) return;
             if (track.title === 'TTS') return
 
+            const trackLabel = track.url ? `[${track.title} by ${track.author}](${track.url})` : `${track.title} by ${track.author}`;
             let em = [createInfoEmbed({
                 title: '🎵 Started Playing',
-                description: `${track.url ? `[${track.title} by ${track.author}](${track.url})` : `${track.title} by ${track.author}`}`,
+                description: trackLabel,
             })];
 
             if (track.thumbnail) {

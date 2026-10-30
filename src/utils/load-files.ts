@@ -36,7 +36,7 @@ export async function importModulesFrom(relativeDirectory: string): Promise<unkn
 
   return Promise.all(
     filePaths
-      .sort((left, right) => left.localeCompare(right))
+      .toSorted((left, right) => left.localeCompare(right))
       .map(async (filePath) => import(pathToFileURL(filePath).href)),
   );
 }

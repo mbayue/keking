@@ -1,9 +1,9 @@
 import { Pool } from 'pg';
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import * as schema from './schema.js';
-import { botGuilds, type StoredGuildRecord } from './schema.js';
+import { botGuilds, socialPreviewChannels, socialPreviewDomains, socialPreviewReplies, type StoredGuildRecord, type StoredPreviewLink } from './schema.js';
 import { config } from '../config.js';
 
 if (!config.databaseUrl) {
@@ -76,4 +76,97 @@ export async function deleteGuild(guildId: string): Promise<void> {
 export async function closeDb(): Promise<void> {
   await pool.end();
 }
-export type { StoredGuildRecord } from './schema.js';
+export type { StoredGuildRecord, StoredPreviewLink } from './schema.js';
+
+export interface StoredPreviewReply {
+  guildId: string;
+  channelId: string;
+  links: StoredPreviewLink[];
+}
+
+export async function getSocialPreviewDomainState(guildId: string, domain: string): Promise<boolean | null> {
+  const rows = await db
+    .select({ enabled: socialPreviewDomains.enabled })
+    .from(socialPreviewDomains)
+    .where(and(eq(socialPreviewDomains.guild_id, guildId), eq(socialPreviewDomains.domain, domain)))
+    .limit(1);
+  return rows[0]?.enabled ?? null;
+}
+export async function setSocialPreviewDomain(
+  guildId: string,
+  domain: string,
+  enabled: boolean,
+  changedBy: string
+): Promise<void> {
+  await db
+    .insert(socialPreviewDomains)
+    .values({ guild_id: guildId, domain, enabled, changed_by: changedBy })
+    .onConflictDoUpdate({
+      target: [socialPreviewDomains.guild_id, socialPreviewDomains.domain],
+      set: { enabled, changed_by: changedBy, updated_at: new Date() },
+    });
+}
+export async function getSocialPreviewChannelState(guildId: string, channelId: string): Promise<boolean | null> {
+  const rows = await db
+    .select({ enabled: socialPreviewChannels.enabled })
+    .from(socialPreviewChannels)
+    .where(and(eq(socialPreviewChannels.guild_id, guildId), eq(socialPreviewChannels.channel_id, channelId)))
+    .limit(1);
+  return rows[0]?.enabled ?? null;
+}
+export async function setSocialPreviewChannel(
+  guildId: string,
+  channelId: string,
+  enabled: boolean,
+  changedBy: string
+): Promise<void> {
+  await db
+    .insert(socialPreviewChannels)
+    .values({ guild_id: guildId, channel_id: channelId, enabled, changed_by: changedBy })
+    .onConflictDoUpdate({
+      target: [socialPreviewChannels.guild_id, socialPreviewChannels.channel_id],
+      set: { enabled, changed_by: changedBy, updated_at: new Date() },
+    });
+}
+export async function isSocialPreviewAllowed(
+  guildId: string,
+  channelId: string,
+  domain: string
+): Promise<boolean> {
+  const [master, domainState, channelState] = await Promise.all([
+    isSocialPreviewEnabled(guildId),
+    getSocialPreviewDomainState(guildId, domain),
+    getSocialPreviewChannelState(guildId, channelId),
+  ]);
+  return master && domainState !== false && channelState !== false;
+}
+export async function savePreviewReply(
+  messageId: string,
+  guildId: string,
+  channelId: string,
+  links: StoredPreviewLink[]
+): Promise<void> {
+  await db
+    .insert(socialPreviewReplies)
+    .values({ message_id: messageId, guild_id: guildId, channel_id: channelId, links })
+    .onConflictDoUpdate({
+      target: socialPreviewReplies.message_id,
+      set: { guild_id: guildId, channel_id: channelId, links },
+    });
+}
+export async function getPreviewReply(messageId: string): Promise<StoredPreviewReply | null> {
+  const rows = await db
+    .select()
+    .from(socialPreviewReplies)
+    .where(eq(socialPreviewReplies.message_id, messageId))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
+  return { guildId: row.guild_id, channelId: row.channel_id, links: row.links };
+}
+export async function updatePreviewReplyLinks(messageId: string, links: StoredPreviewLink[]): Promise<void> {
+  await db
+    .update(socialPreviewReplies)
+    .set({ links })
+    .where(eq(socialPreviewReplies.message_id, messageId));
+}

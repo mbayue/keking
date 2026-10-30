@@ -65,11 +65,15 @@ export const command: SlashCommand = {
       );
     }
 
-    const reply = await interaction.reply({
+    const response = await interaction.reply({
       embeds: [embed],
       components: totalPages > 1 ? [row] : [],
-      fetchReply: true,
+      withResponse: true,
     });
+    const reply = response.resource?.message;
+    if (!reply) {
+      return;
+    }
 
     if (totalPages <= 1) {
       return;

@@ -37,9 +37,11 @@ export const command: SlashCommand = {
           .setStyle(ButtonStyle.Danger),
       );
 
+    const trackLink = nowPlaying.url ? `[${nowPlaying.track}](${nowPlaying.url})` : nowPlaying.track;
+
     let em = [createInfoEmbed({
       title: '🎵 Now Playing',
-      description: `${nowPlaying.url ? `[${nowPlaying.track}](${nowPlaying.url})` : nowPlaying.track}`,
+      description: trackLink,
       fields: [
         {
           name: 'Duration',

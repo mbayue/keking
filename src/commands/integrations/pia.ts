@@ -1,5 +1,4 @@
 import {
-  EmbedBuilder,
   type InteractionEditReplyOptions,
   MessageFlags,
   SlashCommandBuilder,

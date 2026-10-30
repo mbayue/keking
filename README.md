@@ -17,7 +17,7 @@ Keking is a Discord bot built with `discord.js` and TypeScript. It focuses on mu
 
 ## Tech Stack
 
-- Node.js 22+
+- Bun 1.2+
 - TypeScript
 - `discord.js`
 - `discord-player`
@@ -64,12 +64,24 @@ Keking is a Discord bot built with `discord.js` and TypeScript. It focuses on mu
 
 When users post supported links in a guild text channel, Keking can reply with alternative preview-friendly versions.
 
-Supported rewrites in the current codebase:
+Supported rewrites in the current codebase (each with fallback services):
 
-- `x.com` / `twitter.com` -> `fixupx.com`
-- `instagram.com` -> `kkinstagram.com`
+- `x.com` / `twitter.com` -> `fixupx.com` (fallbacks: `vxtwitter.com`, `fixvx.com`)
+- `instagram.com` -> `kkinstagram.com` (fallback: `gginsta.com`)
 - `facebook.com` / `fb.watch` -> `facebed.com`
-- `reddit.com` / `redd.it` -> `rxddit.com`
+- `reddit.com` / `redd.it` -> `rxddit.com` (fallbacks: `vxreddit.com`, `fxreddit.com`)
+- `threads.com` / `threads.net` -> `fixthreads.seria.moe` (fallback: `fixembed.app`)
+- `tiktok.com` (+ `vm`/`vt` shares) -> `fxtiktok.com`
+- `pixiv.net` artworks -> `phixiv.net`
+- `bsky.app` posts -> `bskyx.app`
+- `bilibili.com` videos / `b23.tv` shares -> `vxbilibili.com` (fallback: `fxbilibili.seria.moe`)
+- `pinterest.com` pins / `pin.it` shares -> `pinterestez.com`
+- `*.tumblr.com` posts, `twitch.tv` clips, `deviantart.com` art — rich API cards, original link as fallback
+
+React with 🔄 on the bot's preview reply to cycle a link through its fallback services.
+Prefix a link with `$` or wrap it in `<...>` to skip previewing it.
+Scope control via `/social-preview`: whole server, one link source (`domain`), or one channel (`channel`).
+Replies render as rich cards (author, media, stats — FixEmbed-style) via the fixembed.app metadata API, falling back to plain mirror links when metadata is unavailable.
 
 This behavior depends on the bot being able to read guild message content.
 
@@ -125,25 +137,25 @@ YOUTUBE_COOKIES=youtube-cookies-string
 Install dependencies:
 
 ```bash
-pnpm install
+bun install
 ```
 
 Run in watch mode:
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 Build:
 
 ```bash
-pnpm build
+bun run build
 ```
 
 Start the compiled bot:
 
 ```bash
-pnpm start
+bun run start
 ```
 
 ## Slash Command Deployment
@@ -151,13 +163,13 @@ pnpm start
 Deploy commands:
 
 ```bash
-pnpm deploy:commands
+bun run deploy:commands
 ```
 
 Clear deployed commands:
 
 ```bash
-pnpm deploy:clear-commands
+bun run deploy:clear-commands
 ```
 
 If `DISCORD_GUILD_ID` is set, command deployment can target a single guild for faster updates.
@@ -174,19 +186,19 @@ This repo includes:
 Start the stack:
 
 ```bash
-pnpm docker:up
+bun run docker:up
 ```
 
 Check logs:
 
 ```bash
-pnpm docker:logs
+bun run docker:logs
 ```
 
 Stop the stack:
 
 ```bash
-pnpm docker:down
+bun run docker:down
 ```
 
 If `DATABASE_URL` is omitted in Docker Compose, it defaults to the bundled `db` service.

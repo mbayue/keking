@@ -1,37 +1,13 @@
-FROM node:22-bookworm-slim AS base
-
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-RUN corepack enable
-
-FROM base AS deps
+FROM oven/bun:1-bookworm-slim AS deps
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY package.json ./
+RUN bun install
 
-FROM deps AS build
-
-WORKDIR /app
-
-COPY tsconfig.json ./
-COPY src ./src
-RUN pnpm build
-
-FROM base AS production-deps
-
-WORKDIR /app
-
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
-
-FROM node:22-bookworm-slim AS runtime
+FROM deps AS runtime
 
 ENV NODE_ENV=production
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apt-get update && apt-get install -y \
   ffmpeg \
@@ -41,11 +17,11 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY --from=production-deps /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
-COPY package.json ./
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json tsconfig.json drizzle.config.ts ./
+COPY src ./src
 COPY drizzle ./drizzle
 
-USER node
+USER bun
 
-CMD ["node", "--enable-source-maps", "dist/index.js"]
+CMD ["bun", "src/index.ts"]

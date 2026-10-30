@@ -88,7 +88,7 @@ export const command: SlashCommand = {
       }
 
       const indexStr = buttonInteraction.customId.split('_')[2];
-      const selectedIndex = indexStr ? parseInt(indexStr) : -1;
+      const selectedIndex = indexStr ? Number.parseInt(indexStr) : -1;
 
       if (selectedIndex < 0 || selectedIndex >= results.length) {
         await buttonInteraction.deferUpdate();

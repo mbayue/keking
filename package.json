@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Discord bot boilerplate with discord.js and TypeScript",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc -p tsconfig.json",
-    "check": "pnpm build",
-    "start": "node --enable-source-maps dist/index.js",
-    "deploy:commands": "tsx src/deploy-commands.ts",
-    "deploy:clear-commands": "tsx src/clear-commands.ts",
+    "dev": "bun --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "start": "bun src/index.ts",
+    "deploy:commands": "bun src/deploy-commands.ts",
+    "deploy:clear-commands": "bun src/clear-commands.ts",
     "docker:build": "docker build -t keking-bot .",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down",
@@ -18,34 +18,35 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
   },
-  "engines": {
-    "node": ">=22.12.0"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.28.2",
   "devDependencies": {
-    "@types/node": "^25.9.1",
     "@types/pg": "^8.20.0",
+    "@types/node": "^25.9.1",
+    "bun-types": "latest",
     "drizzle-kit": "^0.31.0",
-    "tsx": "^4.22.3",
     "typescript": "^6.0.3"
   },
   "dependencies": {
     "@discord-player/extractor": "^7.2.0",
     "@discordjs/voice": "^0.19.2",
     "axios": "^1.16.1",
+    "bgutils-js": "4",
     "discord-player": "^7.2.0",
     "discord-player-tts": "^1.0.9",
-    "discord-player-youtube": "^0.8.4",
+    "discord-player-youtubei": "^3.1.0",
     "discord.js": "^14.26.4",
-    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "ffmpeg-static": "^5.3.0",
     "genius-lyrics": "^4.4.7",
+    "googlevideo": "4",
     "libsodium-wrappers": "^0.8.4",
     "pg": "^8.21.0",
+    "simple-ytdl-core": "^1.2.2",
     "youtube-dl-exec": "^3.1.7"
-  }
+  },
+  "trustedDependencies": [
+    "youtube-dl-exec"
+  ]
 }

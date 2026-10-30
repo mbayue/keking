@@ -73,16 +73,19 @@ export function assertBotHasChannelPermissions(
   );
 }
 
-export function createMissingPermissionsReply(error: MissingBotPermissionsError): InteractionReplyOptions {
-  const description = `I need these permissions in **${error.scope}**: ${error.permissions.map((permission) => `\`${permission}\``).join(", ")}.`;
+function formatMissingPermissions(error: MissingBotPermissionsError): string {
+  const quoted = error.permissions.map((permission) => `\`${permission}\``).join(", ");
+  return `I need these permissions in **${error.scope}**: ${quoted}.`;
+}
 
+export function createMissingPermissionsReply(error: MissingBotPermissionsError): InteractionReplyOptions {
   return {
-    embeds: [createErrorEmbed("Missing Bot Permissions", description)],
+    embeds: [createErrorEmbed("Missing Bot Permissions", formatMissingPermissions(error))],
   };
 }
 
 export function createMissingPermissionsMessage(error: MissingBotPermissionsError): string {
-  return `I need these permissions in **${error.scope}**: ${error.permissions.map((permission) => `\`${permission}\``).join(", ")}.`;
+  return formatMissingPermissions(error);
 }
 
 function formatPermission(permission: bigint): string {

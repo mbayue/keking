@@ -1,4 +1,4 @@
-import { ActivityType, Client, GatewayIntentBits, PresenceUpdateStatus } from "discord.js";
+import { ActivityType, Client, GatewayIntentBits, Partials, PresenceUpdateStatus } from "discord.js";
 import { config } from "./config.js";
 import { closeDb, initializeGuildStorage } from "./db/postgres.js";
 import { loadCommands } from "./loaders/commands.js";
@@ -20,8 +20,10 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.MessageContent,
   ],
+  partials: [Partials.Message, Partials.Reaction, Partials.User],
 }) as BotClient;
 
 client.musicPlayer = await initializePlayer(client);
@@ -38,7 +40,7 @@ async function shutdown(signal: string): Promise<void> {
   console.log(`Received ${signal}. Shutting down gracefully...`);
 
   try {
-    client.destroy();
+    await client.destroy();
     await closeDb();
   } finally {
     process.exit(0);

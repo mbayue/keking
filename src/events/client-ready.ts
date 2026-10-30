@@ -30,14 +30,16 @@ export const event: BotEvent = {
 
     if (config.databaseUrl) {
       console.log("Syncing guilds to database...");
-      for (const guild of client.guilds.cache.values()) {
-        try {
-          await upsertGuild(guild.id, guild.name);
-          console.log(`Synced guild: ${guild.name} (${guild.id})`);
-        } catch (error) {
-          console.error(`Failed to sync guild ${guild.name}:`, error);
-        }
-      }
+      await Promise.all(
+        [...client.guilds.cache.values()].map(async (guild) => {
+          try {
+            await upsertGuild(guild.id, guild.name);
+            console.log(`Synced guild: ${guild.name} (${guild.id})`);
+          } catch (error) {
+            console.error(`Failed to sync guild ${guild.name}:`, error);
+          }
+        }),
+      );
     } else {
       console.warn("DATABASE_URL is not set. Guild persistence is disabled.");
     }

@@ -1,6 +1,6 @@
 import { Player, Track, QueueRepeatMode, QueryType } from "discord-player";
 import { SpotifyExtractor, DefaultExtractors } from "@discord-player/extractor";
-import { YoutubeExtractor } from "discord-player-youtube";
+import { YoutubeExtractor } from "discord-player-youtubei";
 import type { GuildMember, VoiceBasedChannel } from "discord.js";
 import { Client } from "discord.js";
 import { TTSExtractor } from "discord-player-tts";
@@ -28,7 +28,7 @@ export async function initializePlayer(client: Client): Promise<Player> {
       slow: false
     });
 
-    await registerMusicEvents(player, client);
+    registerMusicEvents(player, client);
   }
   return player;
 }
@@ -36,8 +36,8 @@ export async function initializePlayer(client: Client): Promise<Player> {
 export class MusicPlayer {
   private activeChannel: VoiceBasedChannel | null = null;
   private textChannelId: string | null = null;
-  private discordPlayer: Player;
-  private guildId: string;
+  private readonly discordPlayer: Player;
+  private readonly guildId: string;
 
   constructor(discordPlayer: Player, guildId: string) {
     this.discordPlayer = discordPlayer;
@@ -48,7 +48,7 @@ export class MusicPlayer {
     this.textChannelId = channelId;
   }
 
-  async joinChannel(member: GuildMember): Promise<boolean> {
+  joinChannel(member: GuildMember): boolean {
     if (!member.voice.channel) return false;
     assertBotCanJoinVoice(member);
     this.activeChannel = member.voice.channel;
@@ -60,6 +60,11 @@ export class MusicPlayer {
 
     try {
       const normalizedQuery = this.normalizeQuery(urlOrQuery);
+      // soundcloud.ts streams via undici Pool, which returns no response under Bun —
+      // bridge SoundCloud links through YouTube instead of playing them directly.
+      if (this.isSoundCloudLink(normalizedQuery)) {
+        return await this.playSoundCloudBridge(normalizedQuery);
+      }
       const isDirectLink = this.isDirectLink(normalizedQuery);
       const result = await this.discordPlayer.play(this.activeChannel as any, normalizedQuery, {
         searchEngine: isDirectLink ? QueryType.AUTO : QueryType.YOUTUBE_SEARCH,
@@ -120,6 +125,47 @@ export class MusicPlayer {
     } catch {
       return false;
     }
+  }
+
+  private isSoundCloudLink(input: string): boolean {
+    try {
+      const hostname = new URL(input).hostname.toLowerCase();
+      return hostname === "soundcloud.com" || hostname.endsWith(".soundcloud.com");
+    } catch {
+      return false;
+    }
+  }
+
+  private async playSoundCloudBridge(soundcloudUrl: string): Promise<string> {
+    if (new URL(soundcloudUrl).pathname.includes("/sets/")) {
+      return "SoundCloud playlists aren't supported yet — paste a single track link.";
+    }
+
+    // Public oEmbed needs no API key; soundcloud.ts API calls ride undici Pool,
+    // which returns no response under Bun.
+    let title = "";
+    let author = "";
+    try {
+      const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(soundcloudUrl)}`);
+      if (!res.ok) return "Could not find that SoundCloud track.";
+      const data: unknown = await res.json();
+      if (typeof data === "object" && data !== null) {
+        if ("title" in data && typeof data.title === "string") title = data.title;
+        if ("author_name" in data && typeof data.author_name === "string") author = data.author_name;
+      }
+    } catch {
+      return "Could not reach SoundCloud to look up that link.";
+    }
+    if (!title) return "Could not find that SoundCloud track.";
+
+    const ytResult = await this.discordPlayer.search(author ? `${author} - ${title}` : title, {
+      searchEngine: QueryType.YOUTUBE_SEARCH,
+    });
+    const ytTrack = ytResult.tracks[0];
+    if (!ytTrack) return `Found "${title}" on SoundCloud but found no YouTube match.`;
+
+    const started = await this.playTrack(ytTrack);
+    return `SoundCloud bridged via YouTube — ${started}`;
   }
 
   skip(): string {
@@ -318,8 +364,6 @@ export class MusicPlayer {
     if (!this.activeChannel) return "Not connected to a voice channel.";
 
     try {
-      const existingQueue = this.discordPlayer.nodes.get(this.guildId);
-      const wasPlaying = existingQueue?.isPlaying() ?? false;
       const queue = this.discordPlayer.nodes.get(this.guildId) ||
         this.discordPlayer.nodes.create(this.guildId, {
           metadata: { guildId: this.guildId, textChannelId: this.textChannelId },

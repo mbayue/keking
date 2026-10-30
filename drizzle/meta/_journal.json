@@ -15,6 +15,13 @@
       "when": 1780209819071,
       "tag": "0001_peaceful_swarm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793285475735,
+      "tag": "0002_social-preview-scopes",
+      "breakpoints": true
     }
   ]
 }

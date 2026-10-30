@@ -8,7 +8,8 @@ try {
 
   const resolvedGuildId = config.guildId ? config.guildId : null;
   await clearCommands(resolvedGuildId);
-  console.log(`Cleared commands for ${resolvedGuildId ? `guild ${resolvedGuildId}` : "global scope"}`);
+  const scope = resolvedGuildId ? `guild ${resolvedGuildId}` : "global scope";
+  console.log(`Cleared commands for ${scope}`);
 } catch (error) {
   console.error("Error clearing commands:", error);
   process.exit(1);
