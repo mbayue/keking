@@ -63,6 +63,7 @@ function renderAnswer(key) {
     pos.textContent = row.pos;
     const song = document.createElement("span");
     song.className = "song";
+    song.textContent = row.song;
     const len = document.createElement("span");
     len.className = "len";
     len.textContent = row.len;
