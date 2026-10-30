@@ -31,6 +31,7 @@ html {
 
 
 body {
+  overflow-x: clip;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--text);
@@ -761,6 +762,7 @@ img {
 .page {
   padding: clamp(80px, 12vh, 160px) var(--margin) clamp(80px, 12vh, 160px);
   max-width: 880px;
+  margin: 0 auto;
 }
 
 .page-head h1 {
@@ -895,7 +897,7 @@ img {
 }
 
 .band-slim {
-  margin: 0 calc(var(--margin) * -1) 48px;
+  margin: 0 calc(50% - 50vw) 48px;
 }
 
 .band-slim img {
