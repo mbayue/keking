@@ -5,6 +5,7 @@ import { config } from "../config.js";
 
 export function registerMusicEvents(player: Player, client: Client): void {
     console.log("core || ", player.scanDeps());
+    console.log("[music] events registered (shell-track guard active)");
 
     player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
         const metadata = queue.metadata as Record<string, unknown> | null;
@@ -20,8 +21,9 @@ export function registerMusicEvents(player: Player, client: Client): void {
             if (!channel || !('isTextBased' in channel) || !channel.isTextBased() || !('send' in channel)) return;
             if (track.title === 'TTS') return
 
-            if (!track.url || !track.title) {
-                console.error(`[music] unresolvable track started playback: ${JSON.stringify({ title: track.title, author: track.author, url: track.url, duration: track.duration, query: (track as unknown as Record<string, unknown>).query ?? null })}`);
+            if (!track.url?.trim() || !track.title?.trim()) {
+                const details = track as unknown as Record<string, unknown>;
+                console.error(`[music] unresolvable track started playback: ${JSON.stringify({ title: track.title, author: track.author, url: track.url, duration: track.duration, query: details.query ?? null, extractor: details.extractor ?? null, requestedBy: details.requestedBy ?? null })}`);
                 await channel.send({
                     embeds: [createInfoEmbed({
                         title: '🎵 Could Not Play',
