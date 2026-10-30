@@ -341,16 +341,27 @@ img {
   max-width: 560px;
 }
 .demo-line {
-  font-size: var(--step-body);
   display: flex;
   align-items: center;
   gap: 2px;
   cursor: text;
+  font-size: clamp(2rem, 5vw, 4rem);
+  border-bottom: 2px solid transparent;
+  padding-bottom: 8px;
+}
+
+.demo-line:focus-within {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.demo-input:focus {
+  outline: none;
 }
 
 .demo-prompt {
   font-family: var(--display);
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 1em;
   color: var(--accent);
   line-height: 1;
 }
@@ -359,12 +370,12 @@ img {
   flex: 1;
   min-width: 0;
   background: none;
-  font-size: var(--step-lead);
+  border: none;
   outline: none;
   color: var(--ink);
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 1em;
   letter-spacing: -0.02em;
   line-height: 1;
   caret-color: transparent;
@@ -381,7 +392,7 @@ img {
   height: 1em;
   background: var(--accent);
   animation: caret-blink 1.1s steps(1) infinite;
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 1em;
 }
 
 @keyframes caret-blink {
@@ -678,8 +689,7 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .demo-input,
-  .demo-prompt {
+  .demo-line {
     font-size: 11vw;
   }
 

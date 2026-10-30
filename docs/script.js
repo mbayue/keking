@@ -20,6 +20,30 @@ const answers = {
 
 const answerEl = document.getElementById("demo-answer");
 const inputEl = document.getElementById("demo-input");
+const demoLine = document.querySelector(".demo-line");
+
+function fitDemo() {
+  if (!demoLine) return;
+  demoLine.style.fontSize = "";
+  const min = 20;
+  let size = parseFloat(getComputedStyle(demoLine).fontSize);
+  let guard = 40;
+  while (inputEl.scrollWidth > inputEl.clientWidth + 1 && size > min && guard-- > 0) {
+    size -= 2;
+    demoLine.style.fontSize = size + "px";
+  }
+}
+
+inputEl.addEventListener("input", () => {
+  renderAnswer(inputEl.value.trim().toLowerCase());
+  fitDemo();
+});
+
+window.addEventListener("resize", fitDemo);
+window.addEventListener("load", fitDemo);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(fitDemo);
+}
 
 function renderAnswer(key) {
   const rows = answers[key];
@@ -63,11 +87,13 @@ document.querySelectorAll(".demo-examples button").forEach((button) => {
   button.addEventListener("click", () => {
     inputEl.value = button.dataset.cmd;
     renderAnswer(button.dataset.cmd);
+    fitDemo();
     inputEl.focus();
   });
 });
 
 renderAnswer("play spring thief");
+fitDemo();
 
 const chips = Array.from(document.querySelectorAll(".chip"));
 let chipIndex = 0;
