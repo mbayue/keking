@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Keking concept G v1 — electro vision</title>
+  <g fill="none" stroke="#000">
+    <circle cx="128" cy="128" r="88" stroke-width="22"/>
+    <circle cx="128" cy="128" r="58" stroke-width="8"/>
+    <path d="M128 22 L140 34 L128 46 L116 34 Z"/>
+    <path d="M128 210 L140 222 L128 234 L116 222 Z"/>
+    <path d="M22 128 L34 116 L46 128 L34 140 Z"/>
+    <path d="M210 128 L222 116 L234 128 L222 140 Z"/>
+  </g>
+  <path d="M128 88 C148 96 152 116 138 128 L158 128 L118 168 C114 150 122 140 132 136 L114 136 Z"/>
+</svg>

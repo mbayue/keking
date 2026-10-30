@@ -1,31 +1,32 @@
-# Keking logo — usage guide (v1, Volt Play)
+# Keking logo — usage guide (Vision gem, final)
 
 ## The mark
-A play triangle split by one lightning cut that breaks the top and bottom edges.
-Music first, electro attitude second. Never redraw it, re-space it, or round it.
+An electro-vision diamond with a hollow core. Original geometry — no HoYoverse artwork traced or referenced. It reads as Keqing's Vision to players and as a clean sigil to everyone else.
 
 ## Files
 | File | Use |
 |---|---|
-| `final-symbol.svg` | Master, black. Default for light backgrounds. |
-| `final-symbol-white.svg` | Reversed, for dark backgrounds. |
-| `final-symbol-pink.svg` | Brand pink `#ff488b`, for plum `#0d060b` backgrounds only. |
-| `final-symbol-small.svg` | Simplified cut. Use at or below 24 px. |
-| `favicon.svg` | Browser tab / shortcut icon (small cut). |
-| `final-horizontal.svg`, `final-stacked.svg` | Lockups. **INTERIM: live `<text>` — convert to outlines before production.** Assumes Jost SemiBold (OFL). |
-| `concept-*.svg` | Rejected round-1 directions. Do not use. |
+| `final-symbol.svg` | Master, black. Light backgrounds. |
+| `final-symbol-violet.svg` | Electro `#8B5CF6`. Primary — plum `#0d060b` and Discord Blurple grounds. |
+| `final-symbol-white.svg` | Reversed, for dark photography or one-colour white jobs. |
+| `favicon.svg` | Browser tab / shortcut icon. Legible at 16 px as drawn. |
+| `final-horizontal.svg`, `final-stacked.svg` | Lockups. **INTERIM: live `<text>` in Jost SemiBold — convert to outlines before production.** |
+| `export/` | PNG renditions: app icon, apple-touch-icon, favicon 16/32, violet + white variants. |
+| `concept-*.svg`, `concepts-round1.png`, `cmp-*.png`, `board.png` | Process record. Do not ship. |
 
 ## Colour
-- Brand pink `#ff488b` on plum `#0d060b` (primary), white on plum, black on light.
-- Pink never sits on any other colour. One-colour jobs use solid black or white.
+- Electro `#8B5CF6` — the mark, CTAs on dark.
+- Plum `#0d060b` — grounds.
+- White — reversed mark, light grounds.
+- Violet never on light backgrounds below 24 px (contrast); use black there.
 
 ## Clear space and minimums
-- Clear space on all sides: one bolt-width (the gap between triangle edge and bolt).
-- Minimum digital size 16 px — always the small cut at or below 24 px.
-- Never place on busy photography. Never add gradients, shadows, or outlines.
-- Discord avatar: symbol centred on plum or Blurple `#5865F2`, cropped circle.
+- Clear space on all sides: half the gem's width.
+- Minimum digital size 16 px (holds as drawn; no small-size cut needed).
+- Never place on busy photography. No gradients, shadows, or outlines.
+- Discord avatar: violet mark on plum, cropped circle. Never the black master on Blurple.
 
-## What still needs doing before production
-1. Convert lockup wordmarks to outlines (needs a font tool; flagged in files).
+## Still open before production
+1. Convert lockup wordmarks to outlines (needs a font tool — unavailable on this machine).
 2. Professional trademark search (this guide is not clearance).
-3. Export PNG/ICO renditions at shipping sizes from the SVGs.
+3. Upload `export/icon-violet-512.png` as the Discord avatar; point any native app icons at `export/`.
