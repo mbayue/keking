@@ -9,6 +9,54 @@ import { Client as GeniusClient } from "genius-lyrics";
 import { config } from "../config.js";
 import { assertBotCanJoinVoice } from "./permissions.js";
 
+/** Boot-time self-check: metadata APIs vs media RPCs. Never logs secrets. */
+async function diagnoseStreamReachability(ytCookies: string): Promise<void> {
+  const summary: Record<string, unknown> = {
+    cookiesPresent: ytCookies.length > 0,
+    cookiesLength: ytCookies.length,
+    cookiesShape: ytCookies.startsWith("[") || ytCookies.startsWith("{")
+      ? "json-not-a-raw-header"
+      : ytCookies.includes("#HttpOnly") || ytCookies.includes("\t")
+        ? "netscape-file-not-a-raw-header"
+        : ytCookies.length > 0
+          ? "header-like"
+          : "missing",
+  };
+
+  try {
+    const body = "f.req=" + encodeURIComponent(
+      JSON.stringify([[[ "jQ1olc", JSON.stringify(["hello", "en", null, "null"]), null, "generic" ]]])
+    );
+    const res = await fetch("https://translate.google.com/_/TranslateWebserverUi/data/batchexecute", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+      signal: AbortSignal.timeout(15000),
+    });
+    const text = await res.text();
+    summary.ttsRpc = { status: res.status, bytes: text.length, head: text.slice(0, 80) };
+  } catch (error) {
+    summary.ttsRpc = { error: error instanceof Error ? error.message : String(error) };
+  }
+
+  try {
+    const res = await fetch("https://www.youtube.com/watch?v=jNQXAC9IVRw", {
+      headers: { "user-agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const text = await res.text();
+    summary.youtubeWatch = {
+      status: res.status,
+      hasVideo: text.includes("Me at the zoo"),
+      botWall: text.includes("unusual traffic") || text.includes("not a bot"),
+    };
+  } catch (error) {
+    summary.youtubeWatch = { error: error instanceof Error ? error.message : String(error) };
+  }
+
+  console.log(`[music] stream-reachability ${JSON.stringify(summary)}`);
+}
+
 // Initialize discord-player
 let player: Player | null = null;
 
@@ -27,8 +75,11 @@ export async function initializePlayer(client: Client): Promise<Player> {
       language: "en",
       slow: false
     });
-
     registerMusicEvents(player, client);
+
+    if (process.env.MUSIC_DEBUG === "1") {
+      void diagnoseStreamReachability(config.ytCookies);
+    }
   }
   return player;
 }
