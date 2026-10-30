@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 480">
+  <title>Keking — stacked lockup (INTERIM: live text, convert to outlines before production)</title>
+  <g transform="translate(64,16) scale(0.75)">
+    <path fill-rule="evenodd" d="M72 56 L72 200 L198 128 Z M163 36 L103 120 L138 120 L88 220 L155 106 L120 106 Z"/>
+  </g>
+  <text x="192" y="400" text-anchor="middle" font-family="Jost, 'Avenir Next', 'Segoe UI', sans-serif" font-weight="600" font-size="104" letter-spacing="1">keking</text>
+</svg>
