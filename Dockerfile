@@ -3,7 +3,7 @@ FROM oven/bun:1-slim AS deps
 WORKDIR /app
 
 COPY package.json ./
-RUN bun install
+RUN YOUTUBE_DL_SKIP_PYTHON_CHECK=1 bun install
 
 FROM deps AS runtime
 
