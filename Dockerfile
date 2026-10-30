@@ -1,4 +1,4 @@
-FROM oven/bun:1-bookworm-slim AS deps
+FROM oven/bun:1-slim AS deps
 
 WORKDIR /app
 
