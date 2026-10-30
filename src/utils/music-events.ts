@@ -147,7 +147,7 @@ export function registerMusicEvents(player: Player, client: Client): void {
         }
     });
 
-    if (config.guildId) {
+    if (config.guildId || process.env.MUSIC_DEBUG === "1") {
         player.on(GuildQueueEvent.Debug, (message) => {
             // Emitted when the player sends debug info
             // Useful for seeing what dependencies, extractors, etc are loaded
