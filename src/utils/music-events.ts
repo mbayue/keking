@@ -20,8 +20,20 @@ export function registerMusicEvents(player: Player, client: Client): void {
             if (!channel || !('isTextBased' in channel) || !channel.isTextBased() || !('send' in channel)) return;
             if (track.title === 'TTS') return
 
+            if (!track.url || !track.title) {
+                console.error(`[music] unresolvable track started playback: ${JSON.stringify({ title: track.title, author: track.author, url: track.url, duration: track.duration, query: (track as unknown as Record<string, unknown>).query ?? null })}`);
+                await channel.send({
+                    embeds: [createInfoEmbed({
+                        title: '🎵 Could Not Play',
+                        description: 'The search resolved but produced no playable audio. Try a full YouTube watch URL or a different title.',
+                    })],
+                }).catch((sendError: unknown) => console.error('[music] failed to announce unplayable track:', sendError));
+                queue.node.skip();
+                return;
+            }
+
             const trackLabel = track.url ? `[${track.title} by ${track.author}](${track.url})` : `${track.title} by ${track.author}`;
-            let em = [createInfoEmbed({
+            const em = [createInfoEmbed({
                 title: '🎵 Started Playing',
                 description: trackLabel,
             })];
