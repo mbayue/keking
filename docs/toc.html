@@ -3,77 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terms of Conditions - Keking</title>
+    <title>Terms — Keking</title>
+    <meta name="description" content="The rules for using Keking." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="container">
-        <div class="nav-brand">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V5l12-2v13"></path>
-            <circle cx="6" cy="18" r="3"></circle>
-            <circle cx="18" cy="16" r="3"></circle>
-          </svg>
-          <a href="index.html" class="logo">Keking</a>
-        </div>
-        
-        <button class="mobile-menu-btn" aria-label="Toggle menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12h18M3 6h18M3 18h18"></path>
-          </svg>
-        </button>
+    <header class="nav">
+      <a class="wordmark" href="index.html">Keking</a>
+      <nav class="nav-links">
+        <a href="commands.html">Commands</a>
+        <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
+        <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
+      </nav>
+    </header>
 
-        <ul class="nav-links">
-          <li><a href="index.html#features">Features</a></li>
-          <li><a href="commands.html">Commands</a></li>
-          <li><a href="index.html#setup">Setup</a></li>
-          <li><a href="https://github.com/mbayue/keking" target="_blank">GitHub</a></li>
-          <li><a href="https://s.id/keking" class="btn btn-primary" target="_blank">Invite Bot</a></li>
-        </ul>
-      </div>
-    </nav>
-
-    <div class="policy-header">
-      <div class="container">
-        <h1>Terms of Conditions</h1>
+    <main class="page policy">
+      <div class="page-head">
+        <h1>Terms.</h1>
         <p>Using Keking means you accept these rules.</p>
       </div>
-    </div>
 
-    <div class="container">
-      <div class="policy-content">
-        <h3>1. Rules</h3>
-        <p>Follow Discord's terms. Stop playing illegal or copyrighted material. Do not spam our bot or try to break the infrastructure.</p>
+      <figure class="band band-slim" aria-label="A singer performing on an outdoor stage">
+        <img src="assets/buckle-n-boots-live-performance-chidfest-fesival.jpg" width="1920" height="1507" alt="" loading="lazy" decoding="async" />
+      </figure>
 
-        <h3>2. Availability</h3>
-        <p>We provide Keking "as is". We guarantee no uptime. The bot goes offline when it needs to.</p>
+      <h3>1. Rules</h3>
+      <p>Follow Discord's terms. Don't play illegal material, spam the bot, or try to break it.</p>
 
-        <h3>3. Liability</h3>
-        <p>You use Keking at your own risk. We take zero responsibility for damages or lost data.</p>
+      <h3>2. Availability</h3>
+      <p>Keking is provided as-is. We guarantee no uptime — the bot goes offline when it needs to.</p>
 
-        <h3>4. Changes</h3>
-        <p>We update these terms occasionally. Keep using Keking, and you accept the new terms.</p>
-        
-        <h3>5. Contact</h3>
-        <p>Open an issue on the GitHub repository if you have questions.</p>
-      </div>
-    </div>
+      <h3>3. Liability</h3>
+      <p>You use Keking at your own risk. We take no responsibility for damages or lost data.</p>
+
+      <h3>4. Changes</h3>
+      <p>These terms change occasionally. Keep using Keking and you accept the new ones.</p>
+
+      <h3>5. Contact</h3>
+      <p>Open an issue on the GitHub repository if you have questions.</p>
+    </main>
+    <script>
+      document.querySelectorAll(".policy h3, .policy p").forEach((el, i) => {
+        el.classList.add("reveal");
+        el.style.transitionDelay = (i % 4) * 60 + "ms";
+      });
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        }
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    </script>
 
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <h3>Keking Discord Bot</h3>
-            <p>Built for Discord servers that need music, lyrics, and utilities.</p>
-          </div>
-          <div class="footer-links">
-            <a href="https://github.com/mbayue/keking">GitHub</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="toc.html">Terms</a>
-          </div>
-        </div>
-      </div>
+      <a class="wordmark" href="index.html">Keking</a>
+      <nav class="footer-links">
+        <a href="commands.html">Commands</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="toc.html">Terms</a>
+      </nav>
     </footer>
   </body>
 </html>

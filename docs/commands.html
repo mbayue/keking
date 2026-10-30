@@ -3,314 +3,131 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Commands Reference - Keking</title>
+    <title>Commands — Keking</title>
+    <meta name="description" content="Every Keking slash command: music, lyrics, text-to-speech, discovery, admin, and utilities." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="container">
-        <div class="nav-brand">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V5l12-2v13"></path>
-            <circle cx="6" cy="18" r="3"></circle>
-            <circle cx="18" cy="16" r="3"></circle>
-          </svg>
-          <a href="index.html" class="logo">Keking</a>
-        </div>
-        
-        <button class="mobile-menu-btn" aria-label="Toggle menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12h18M3 6h18M3 18h18"></path>
-          </svg>
-        </button>
+    <header class="nav">
+      <a class="wordmark" href="index.html">Keking</a>
+      <nav class="nav-links">
+        <a href="commands.html">Commands</a>
+        <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
+        <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
+      </nav>
+    </header>
 
-        <ul class="nav-links">
-          <li><a href="index.html#features">Features</a></li>
-          <li><a href="commands.html">Commands</a></li>
-          <li><a href="index.html#setup">Setup</a></li>
-          <li><a href="https://github.com/mbayue/keking" target="_blank">GitHub</a></li>
-          <li><a href="https://s.id/keking" class="btn btn-primary" target="_blank">Invite Bot</a></li>
-        </ul>
+    <main class="page">
+      <div class="page-head">
+        <h1>Commands.</h1>
+        <p>Every slash command Keking answers to. Type one in any channel the bot can read.</p>
       </div>
-    </nav>
+      <figure class="band band-slim" aria-label="A live crowd with their hands up">
+        <img src="assets/crowd-surfing-concert-hatebreed-2009.jpg" width="1920" height="1440" alt="" loading="lazy" decoding="async" />
+      </figure>
 
-    <div class="docs-layout">
-      <aside class="docs-sidebar">
-        <div class="docs-nav">
-          <h3>Categories</h3>
-          <ul>
-            <li><a href="#music">Music</a></li>
-            <li><a href="#playlist">Playlist</a></li>
-            <li><a href="#lyrics">Lyrics</a></li>
-            <li><a href="#tts">Text-to-Speech</a></li>
-            <li><a href="#admin">Admin</a></li>
-            <li><a href="#utility">Utility</a></li>
-          </ul>
-        </div>
-      </aside>
+      <input type="search" class="doc-search" id="cmd-search" placeholder="Search commands…" aria-label="Search commands" />
 
-      <main class="docs-main">
-        <div class="docs-search">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="M21 21l-4.3-4.3"></path>
-          </svg>
-          <input type="text" id="cmd-search" placeholder="Search commands..." />
-        </div>
+      <nav class="doc-nav" aria-label="Categories">
+        <a href="#music">Music</a>
+        <a href="#lyrics">Lyrics</a>
+        <a href="#tts">Text-to-Speech</a>
+        <a href="#discovery">Discovery</a>
+        <a href="#admin">Admin</a>
+        <a href="#utility">Utility</a>
+      </nav>
 
-        <div id="music" class="docs-category">
-          <h2>Music</h2>
-          
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/play</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Play a track from a search query or URL.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/play &lt;query or url&gt;</span></div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Example</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/play yorushika spring thief</span></div>
-            </div>
-          </div>
+      <section class="doc-category" id="music">
+        <h2>Music</h2>
+        <div class="doc-card"><p class="doc-name">/play</p><div class="doc-field"><span class="doc-label">Does</span><span>Play a track from a search query or URL.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/play yorushika spring thief</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/search</p><div class="doc-field"><span class="doc-label">Does</span><span>Search and pick from several results.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/search kaibutsu</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/queue</p><div class="doc-field"><span class="doc-label">Does</span><span>Show what is playing and what is next.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/queue</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/now</p><div class="doc-field"><span class="doc-label">Does</span><span>Show the current track.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/now</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/skip</p><div class="doc-field"><span class="doc-label">Does</span><span>Skip to the next track.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/skip</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/pause</p><div class="doc-field"><span class="doc-label">Does</span><span>Pause playback.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/pause</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/resume</p><div class="doc-field"><span class="doc-label">Does</span><span>Resume playback.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/resume</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/stop</p><div class="doc-field"><span class="doc-label">Does</span><span>Stop playback and clear the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/stop</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/leave</p><div class="doc-field"><span class="doc-label">Does</span><span>Disconnect the bot from voice.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/leave</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/loop</p><div class="doc-field"><span class="doc-label">Does</span><span>Loop the track or the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/loop</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/shuffle</p><div class="doc-field"><span class="doc-label">Does</span><span>Shuffle the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/shuffle</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/remove</p><div class="doc-field"><span class="doc-label">Does</span><span>Remove a track from the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/remove 3</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/clear</p><div class="doc-field"><span class="doc-label">Does</span><span>Clear the whole queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/clear</span></span></div></div>
+      </section>
 
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/skip</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Skip the currently playing track.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/skip</span></div>
-            </div>
-          </div>
+      <figure class="band band-slim" aria-label="A singer performing on an outdoor stage">
+        <img src="assets/buckle-n-boots-live-performance-chidfest-fesival.jpg" width="1920" height="1507" alt="" loading="lazy" decoding="async" />
+      </figure>
 
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/pause</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Pause the current playback.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/pause</span></div>
-            </div>
-          </div>
+      <section class="doc-category" id="lyrics">
+        <h2>Lyrics</h2>
+        <div class="doc-card"><p class="doc-name">/lyrics</p><div class="doc-field"><span class="doc-label">Does</span><span>Show lyrics for the current track, or search by name.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/lyrics spring thief</span></span></div></div>
+      </section>
 
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/queue</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Display the current music queue.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/queue</span></div>
-            </div>
-          </div>
-          
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/shuffle</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Shuffle the music queue.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/shuffle</span></div>
-            </div>
-          </div>
-        </div>
+      <section class="doc-category" id="tts">
+        <h2>Text-to-Speech</h2>
+        <div class="doc-card"><p class="doc-name">/tts</p><div class="doc-field"><span class="doc-label">Does</span><span>Speak text aloud in your voice channel.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/tts good morning everyone</span></span></div></div>
+      </section>
 
-        <div id="playlist" class="docs-category">
-          <h2>Playlist</h2>
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/playlist</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Manage your saved playlists and favorites.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/playlist</span></div>
-            </div>
-          </div>
-        </div>
+      <section class="doc-category" id="discovery">
+        <h2>Discovery</h2>
+        <div class="doc-card"><p class="doc-name">/pia</p><div class="doc-field"><span class="doc-label">Does</span><span>Search NovelPia novels.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/pia regression</span></span></div></div>
+      </section>
 
-        <div id="lyrics" class="docs-category">
-          <h2>Lyrics</h2>
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/lyrics</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Show lyrics for the current track or search manually.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/lyrics [query]</span></div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Example</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/lyrics spring thief</span></div>
-            </div>
-          </div>
-        </div>
+      <section class="doc-category" id="admin">
+        <h2>Admin</h2>
+        <div class="doc-card"><p class="doc-name">/social-preview</p><div class="doc-field"><span class="doc-label">Does</span><span>Turn link-preview cards on or off, per server, domain, or channel. Needs Manage Server.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/social-preview enabled:False domain:Facebook</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/botstats</p><div class="doc-field"><span class="doc-label">Does</span><span>Show bot health and uptime.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/botstats</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/guildinfo</p><div class="doc-field"><span class="doc-label">Does</span><span>Show info about this server.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/guildinfo</span></span></div></div>
+      </section>
 
-        <div id="tts" class="docs-category">
-          <h2>Text-to-Speech</h2>
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/tts</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Convert text messages into voice channel audio.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/tts &lt;text&gt;</span></div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Example</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/tts Welcome to the server</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="admin" class="docs-category">
-          <h2>Admin</h2>
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/botstats</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Display bot statistics and uptime information.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/botstats</span></div>
-            </div>
-          </div>
-          
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/guildinfo</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Show information about the current server.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/guildinfo</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="utility" class="docs-category">
-          <h2>Utility</h2>
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/help</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Display help information and available commands.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/help</span></div>
-            </div>
-          </div>
-          
-          <div class="cmd-doc-card">
-            <div class="cmd-doc-header">
-              <span class="cmd-doc-name">/ping</span>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Description</div>
-              <div class="cmd-doc-value">Check bot latency and response time.</div>
-            </div>
-            <div class="cmd-doc-field">
-              <div class="cmd-doc-label">Usage</div>
-              <div class="cmd-doc-value"><span class="cmd-doc-code">/ping</span></div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+      <section class="doc-category" id="utility">
+        <h2>Utility</h2>
+        <div class="doc-card"><p class="doc-name">/help</p><div class="doc-field"><span class="doc-label">Does</span><span>List commands.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/help</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/ping</p><div class="doc-field"><span class="doc-label">Does</span><span>Check the bot's latency.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/ping</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/server</p><div class="doc-field"><span class="doc-label">Does</span><span>Show basic server info.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/server</span></span></div></div>
+      </section>
+    </main>
 
     <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-brand">
-            <h3>Keking Discord Bot</h3>
-            <p>Built for Discord servers that need music, lyrics, and utilities.</p>
-          </div>
-          <div class="footer-links">
-            <a href="https://github.com/mbayue/keking" target="_blank">GitHub</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="toc.html">Terms</a>
-          </div>
-        </div>
-      </div>
+      <a class="wordmark" href="index.html">Keking</a>
+      <nav class="footer-links">
+        <a href="commands.html">Commands</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="toc.html">Terms</a>
+      </nav>
     </footer>
 
     <script>
-      // Mobile menu toggle
-      const menuBtn = document.querySelector('.mobile-menu-btn');
-      const navLinks = document.querySelector('.nav-links');
-      
-      menuBtn.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-      });
-
-      // Simple command search filter
-      const searchInput = document.getElementById('cmd-search');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const query = e.target.value.toLowerCase();
-          const cards = document.querySelectorAll('.cmd-doc-card');
-          const categories = document.querySelectorAll('.docs-category');
-          
-          cards.forEach(card => {
-            const text = card.innerText.toLowerCase();
-            if (text.includes(query)) {
-              card.style.display = 'block';
-            } else {
-              card.style.display = 'none';
-            }
-          });
-          
-          categories.forEach(cat => {
-            const visibleCards = cat.querySelectorAll('.cmd-doc-card[style="display: block;"], .cmd-doc-card:not([style="display: none;"])');
-            if (visibleCards.length === 0 && query !== '') {
-              cat.querySelector('h2').style.display = 'none';
-            } else {
-              cat.querySelector('h2').style.display = 'block';
-            }
-          });
+      const searchInput = document.getElementById("cmd-search");
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll(".doc-card").forEach((card) => {
+          card.style.display = card.innerText.toLowerCase().includes(query) ? "" : "none";
         });
-      }
+        document.querySelectorAll(".doc-category").forEach((cat) => {
+          const visible = Array.from(cat.querySelectorAll(".doc-card")).some(
+            (card) => card.style.display !== "none"
+          );
+          cat.style.display = visible || query === "" ? "" : "none";
+        });
+      });
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        }
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".doc-category h2, .doc-card").forEach((el, i) => {
+        el.classList.add("reveal");
+        el.style.transitionDelay = (i % 4) * 60 + "ms";
+        observer.observe(el);
+      });
     </script>
   </body>
 </html>
