@@ -7,10 +7,11 @@ import {
   type InteractionReplyOptions,
 } from "discord.js";
 
+import { config } from "../config.js";
 import type { BotEvent } from "../structures/event.js";
 import type { BotClient } from "../types/client.js";
 import { createErrorEmbed } from "../utils/embeds.js";
-import { getPlayer } from "../utils/music.js";
+import { getPlayer } from "../music/player.js";
 import { MissingBotPermissionsError, createMissingPermissionsReply } from "../utils/permissions.js";
 
 export const event: BotEvent = {
@@ -24,6 +25,14 @@ export const event: BotEvent = {
     }
 
     if (interaction.isButton() && interaction.customId.startsWith("music_")) {
+      if (!config.musicEnabled) {
+        await interaction.reply({
+          content: "Music playback is currently disabled.",
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
+      }
+
       await handleMusicButtonSafely(interaction);
     }
   },

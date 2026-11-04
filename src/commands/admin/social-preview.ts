@@ -12,7 +12,7 @@ import { config } from "../../config.js";
 import type { SlashCommand } from "../../structures/command.js";
 import type { StoredGuildRecord } from "../../db/postgres.js";
 import { createErrorEmbed } from "../../utils/embeds.js";
-import { SOCIAL_DOMAINS, isSocialDomainId } from "../../utils/social-preview.js";
+import { SOCIAL_DOMAINS, isSocialDomainId } from "../../social/domains.js";
 import {
   getGuildRecord,
   getSocialPreviewChannelState,

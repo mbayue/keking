@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keking — Your server, now playing</title>
-    <meta name="description" content="Keking is a Discord bot for music, text-to-speech, and link previews. One invite and the queue is running." />
+    <meta name="description" content="Keking is a Discord bot for Keqing AI chat, text-to-speech, and link previews. Music playback is temporarily paused." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -20,6 +20,7 @@
       <a class="wordmark" href="index.html"><img src="assets/mark.svg" alt="" width="32" height="32">Keking</a>
       <nav class="nav-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
         <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
       </nav>
@@ -56,7 +57,7 @@
             </div>
           </div>
           <p class="hero-half hero-right">play.</p>
-          <p class="hero-sub">Keking is a Discord bot for music, text-to-speech, and link previews. One invite and the queue is running.</p>
+          <p class="hero-sub">Keking is a Discord bot for Keqing AI chat, text-to-speech, and link previews. Music playback is temporarily paused; <code>/tts</code> is live, Keqing answers mentions or replies, and speaks the reply when joined to voice.</p>
           <a class="btn" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
         </div>
       </section>
@@ -73,16 +74,12 @@
           <div class="demo reveal" data-ui>
             <label class="demo-line" for="demo-input">
               <span class="demo-prompt" aria-hidden="true">/</span>
-              <input id="demo-input" class="demo-input" value="play spring thief" spellcheck="false" autocomplete="off" aria-label="Try a bot command" />
+              <input id="demo-input" class="demo-input" value="tts good morning everyone" spellcheck="false" autocomplete="off" aria-label="Try a bot command" />
               <span class="demo-caret" aria-hidden="true"></span>
             </label>
             <div class="demo-answer" id="demo-answer" aria-live="polite"></div>
             <div class="demo-examples">
-              <button type="button" data-cmd="play spring thief">/play</button>
-
-              <button type="button" data-cmd="lyrics">/lyrics</button>
               <button type="button" data-cmd="tts good morning everyone">/tts</button>
-              <button type="button" data-cmd="skip">/skip</button>
             </div>
           </div>
         </div>
@@ -97,11 +94,11 @@
           </div>
           <div class="seg seg-b" style="--grow: 12">
             <span class="seg-time">Seconds</span>
-            <span class="seg-note">Then, play anything from YouTube or Spotify.</span>
+            <span class="seg-note">Then, speak in your voice channel with /tts.</span>
           </div>
           <div class="seg seg-c" style="--grow: 76">
             <span class="seg-time">All night</span>
-            <span class="seg-note">Finally, queue, lyrics, and voice notes on tap.</span>
+            <span class="seg-note">Finally, link previews unfold automatically.</span>
           </div>
         </div>
       </section>
@@ -127,6 +124,7 @@
       <a class="wordmark" href="index.html">Keking</a>
       <nav class="footer-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="privacy.html">Privacy</a>
         <a href="toc.html">Terms</a>
       </nav>

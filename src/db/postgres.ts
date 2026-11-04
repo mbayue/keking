@@ -1,20 +1,57 @@
 import { Pool } from 'pg';
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, lt } from 'drizzle-orm';
 import * as schema from './schema.js';
-import { botGuilds, socialPreviewChannels, socialPreviewDomains, socialPreviewReplies, type StoredGuildRecord, type StoredPreviewLink } from './schema.js';
+import { aiChatMemories, botGuilds, socialPreviewChannels, socialPreviewDomains, socialPreviewReplies, type StoredChatTurn, type StoredGuildRecord, type StoredPreviewLink } from './schema.js';
 import { config } from '../config.js';
 
-if (!config.databaseUrl) {
-  throw new Error('Missing required environment variable: DATABASE_URL');
+export function createDatabase(databaseUrl: string) {
+  if (!databaseUrl) {
+    throw new Error('Missing required environment variable: DATABASE_URL');
+  }
+
+  const pool = new Pool({ connectionString: databaseUrl });
+  const database: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
+  return { pool, database };
 }
 
-const pool = new Pool({ connectionString: config.databaseUrl });
-const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
+const { pool, database: db } = createDatabase(config.databaseUrl ?? "");
 
-export async function initializeGuildStorage(): Promise<void> {
+const PRUNE_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+type InitializeGuildStorageOptions = {
+  prune?: typeof pruneAiChatMemory;
+  schedule?: (task: () => void) => void;
+};
+
+export async function runScheduledPrune(
+  prune: typeof pruneAiChatMemory = pruneAiChatMemory,
+): Promise<void> {
+  try {
+    await prune(config.aiMemoryRetentionDays);
+  } catch (error) {
+    console.error('[ai] failed to prune expired memory:', error);
+  }
+}
+
+export async function initializeGuildStorage(
+  options: InitializeGuildStorageOptions = {},
+): Promise<void> {
   await migrate(db, { migrationsFolder: 'drizzle' });
+
+  const prune = options.prune ?? pruneAiChatMemory;
+  const pruned = await prune(config.aiMemoryRetentionDays);
+  if (pruned > 0) {
+    console.log(`[ai] pruned ${pruned} expired memory row(s).`);
+  }
+
+  const schedule = options.schedule ?? ((task) => {
+    setInterval(task, PRUNE_INTERVAL_MS).unref();
+  });
+  schedule(() => {
+    void runScheduledPrune(prune);
+  });
 }
 export async function upsertGuild(guildId: string, guildName: string): Promise<void> {
   await db
@@ -47,6 +84,20 @@ export async function setGuildCommandHash(guildId: string, commandsHash: string)
     .set({ commands_hash: commandsHash, updated_at: new Date() })
     .where(eq(botGuilds.guild_id, guildId));
 }
+export async function isAiEnabled(guildId: string): Promise<boolean> {
+  const rows = await db
+    .select({ ai_enabled: botGuilds.ai_enabled })
+    .from(botGuilds)
+    .where(eq(botGuilds.guild_id, guildId))
+    .limit(1);
+  return rows[0]?.ai_enabled ?? true;
+}
+export async function setAiEnabled(guildId: string, enabled: boolean): Promise<void> {
+  await db
+    .update(botGuilds)
+    .set({ ai_enabled: enabled, updated_at: new Date() })
+    .where(eq(botGuilds.guild_id, guildId));
+}
 export async function isSocialPreviewEnabled(guildId: string): Promise<boolean> {
   const rows = await db
     .select({ social_preview_enabled: botGuilds.social_preview_enabled })
@@ -71,12 +122,53 @@ export async function setSocialPreviewEnabled(
     .where(eq(botGuilds.guild_id, guildId));
 }
 export async function deleteGuild(guildId: string): Promise<void> {
+  await db.delete(aiChatMemories).where(eq(aiChatMemories.guild_id, guildId));
   await db.delete(botGuilds).where(eq(botGuilds.guild_id, guildId));
 }
 export async function closeDb(): Promise<void> {
   await pool.end();
 }
-export type { StoredGuildRecord, StoredPreviewLink } from './schema.js';
+export type { StoredChatTurn, StoredGuildRecord, StoredPreviewLink } from './schema.js';
+
+export async function getAiChatMemory(guildId: string, userId: string): Promise<StoredChatTurn[]> {
+  const rows = await db
+    .select({ turns: aiChatMemories.turns })
+    .from(aiChatMemories)
+    .where(and(eq(aiChatMemories.guild_id, guildId), eq(aiChatMemories.user_id, userId)))
+    .limit(1);
+  return rows[0]?.turns ?? [];
+}
+export async function saveAiChatMemory(
+  guildId: string,
+  userId: string,
+  turns: StoredChatTurn[],
+): Promise<void> {
+  await db
+    .insert(aiChatMemories)
+    .values({ guild_id: guildId, user_id: userId, turns })
+    .onConflictDoUpdate({
+      target: [aiChatMemories.guild_id, aiChatMemories.user_id],
+      set: { turns, updated_at: new Date() },
+    });
+}
+export async function deleteAiChatMemory(guildId: string, userId: string): Promise<void> {
+  await db
+    .delete(aiChatMemories)
+    .where(and(eq(aiChatMemories.guild_id, guildId), eq(aiChatMemories.user_id, userId)));
+}
+export async function deleteAllAiChatMemory(guildId: string): Promise<number> {
+  const result = await db
+    .delete(aiChatMemories)
+    .where(eq(aiChatMemories.guild_id, guildId));
+  return result.rowCount ?? 0;
+}
+export async function pruneAiChatMemory(retentionDays: number): Promise<number> {
+  const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
+  const result = await db
+    .delete(aiChatMemories)
+    .where(lt(aiChatMemories.updated_at, cutoff));
+  return result.rowCount ?? 0;
+}
 
 export interface StoredPreviewReply {
   guildId: string;

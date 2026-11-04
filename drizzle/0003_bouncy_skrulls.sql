@@ -1,0 +1,1 @@
+ALTER TABLE "bot_guilds" ADD COLUMN "ai_enabled" boolean DEFAULT true NOT NULL;

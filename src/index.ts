@@ -4,7 +4,7 @@ import { closeDb, initializeGuildStorage } from "./db/postgres.js";
 import { loadCommands } from "./loaders/commands.js";
 import { loadEvents } from "./loaders/events.js";
 import type { BotClient } from "./types/client.js";
-import { initializePlayer } from "./utils/music.js";
+import { initializePlayer } from "./music/player.js";
 
 const client = new Client({
   presence: {

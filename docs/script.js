@@ -1,20 +1,8 @@
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const answers = {
-  "play spring thief": [
-    { pos: "01", song: "Yorushika — Spring Thief", len: "3:47", live: true }, // taste-skill-ignore: queue position, real track content
-    { pos: "02", song: "Eve — Kaibutsu", len: "3:25" }, // taste-skill-ignore: queue position, real track content
-    { pos: "03", song: "YOASOBI — Yoru ni Kakeru", len: "4:21" }, // taste-skill-ignore: queue position, real track content
-  ],
-  lyrics: [
-    { pos: "♪", song: "Spring Thief — Yorushika", len: "verse 1", live: true }, // taste-skill-ignore: music glyph inside the player fragment
-  ],
   "tts good morning everyone": [
     { pos: "🔊", song: "Speaking in voice channel: General", len: "0:04", live: true }, // taste-skill-ignore: TTS status glyph inside the player fragment
-  ],
-  skip: [
-    { pos: "02", song: "Eve — Kaibutsu", len: "3:25", live: true }, // taste-skill-ignore: queue position, real track content
-    { pos: "03", song: "YOASOBI — Yoru ni Kakeru", len: "4:21" }, // taste-skill-ignore: queue position, real track content
   ],
 };
 
@@ -93,7 +81,7 @@ document.querySelectorAll(".demo-examples button").forEach((button) => {
   });
 });
 
-renderAnswer("play spring thief");
+renderAnswer("tts good morning everyone");
 fitDemo();
 
 const chips = Array.from(document.querySelectorAll(".chip"));
@@ -112,7 +100,7 @@ if (!reduced && chips.length > 1) {
   }, 4000);
 }
 
-const commands = ["play", "queue", "lyrics", "skip", "shuffle", "loop", "tts", "search", "pause", "now"];
+const commands = ["tts", "help", "ping", "server"];
 const proofNames = document.getElementById("proof-names");
 const litTimers = [];
 
@@ -124,7 +112,7 @@ commands.forEach((name, i) => {
 });
 const tail = document.createElement("span");
 tail.className = "cmd tail";
-tail.textContent = " and 12 more.";
+tail.textContent = " and 4 more.";
 proofNames.appendChild(tail);
 
 const cmdSpans = Array.from(proofNames.querySelectorAll(".cmd"));

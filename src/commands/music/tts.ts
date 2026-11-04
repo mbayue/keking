@@ -1,6 +1,6 @@
 import { MessageFlags, SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand } from '../../structures/command.js';
-import { getPlayer } from '../../utils/music.js';
+import { getPlayer } from '../../music/player.js';
 import { createInfoEmbed, createErrorEmbed } from '../../utils/embeds.js';
 
 export const command: SlashCommand = {
@@ -46,11 +46,13 @@ export const command: SlashCommand = {
             }
 
             const result = await player.playTTS(text);
+            const embed = createInfoEmbed({
+                title: 'TTS',
+                description: result,
+            });
+
             await interaction.reply({
-                embeds: [createInfoEmbed({
-                    title: 'TTS',
-                    description: result,
-                })],
+                embeds: [embed],
             });
         } catch (error) {
             console.error('Error in TTS command:', error);

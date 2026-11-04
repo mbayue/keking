@@ -1,5 +1,6 @@
 import {
   EmbedBuilder,
+  InteractionContextType,
   MessageFlags,
   SlashCommandBuilder,
   type InteractionReplyOptions,
@@ -13,7 +14,7 @@ export const command: SlashCommand = {
   data: new SlashCommandBuilder()
     .setName("guildinfo")
     .setDescription("Shows guild and deployment info for this server.")
-    .setDMPermission(false),
+    .setContexts(InteractionContextType.Guild),
   async execute(interaction) {
     if (!interaction.inCachedGuild()) {
       const reply = {

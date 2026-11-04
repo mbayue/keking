@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, tests, coverage, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: keking
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d keking"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DISCORD_TOKEN: ci-placeholder-token
+      DISCORD_CLIENT_ID: "000000000000000000"
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/keking
+      MUSIC_ENABLED: "false"
+      ELEVENLABS_ENABLED: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.4"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run check
+
+      - name: Test with 100% coverage threshold
+        run: bun run test:coverage
+
+      - name: Build
+        run: bun run build

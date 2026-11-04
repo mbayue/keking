@@ -1,0 +1,22 @@
+[test]
+coverageSkipTestFiles = true
+coverageThreshold = { lines = 1, functions = 1 }
+coveragePathIgnorePatterns = [
+  "src/index.ts",
+  "src/commands/**",
+  "src/events/**",
+  "src/loaders/**",
+  "src/music/player.ts",
+  "src/music/events.ts",
+  "src/social/cards.ts",
+  "src/social/handlers/**",
+  "src/tts/index.ts",
+  "src/ai/keqing/handler.ts",
+  "src/ai/keqing/index.ts",
+  "src/elevenlabs-client.ts",
+  "src/utils/deploy-commands.ts",
+  "src/utils/permissions.ts",
+  "src/structures/**",
+  "src/types/**",
+  "test/fixtures/**",
+]

@@ -13,6 +13,12 @@ export const event: BotEvent = {
     console.log(`Logged in as ${client.user.tag}`);
     console.log(`Client is in ${client.guilds.cache.size} guild(s).`);
 
+    if (config.aiApiKey) {
+      console.log(`[ai] Keqing chat enabled (${config.aiModel}).`);
+    } else {
+      console.log("[ai] Keqing chat disabled: set AI_API_KEY to enable.");
+    }
+
     // Auto-deploy commands on startup (production: global, development: guild-only)
     const isProduction = !config.guildId;
     if (isProduction) {

@@ -20,6 +20,7 @@
       <a class="wordmark" href="index.html"><img src="assets/mark.svg" alt="" width="32" height="32">Keking</a>
       <nav class="nav-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
         <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
       </nav>
@@ -28,7 +29,7 @@
     <main class="page">
       <div class="page-head">
         <h1>Commands.</h1>
-        <p>Every slash command Keking answers to. Type one in any channel the bot can read.</p>
+        <p>Every slash command Keking answers to. Type one in any channel the bot can read. Music playback is temporarily disabled; <code>/join</code>, <code>/leave</code>, and <code>/tts</code> remain available. AI chat is not a slash command: mention Keking or reply to one of its messages.</p>
       </div>
       <figure class="band band-slim" aria-label="Fischl and Keqing cosplay">
         <img src="assets/cosplay-of-fischl-keqing-bilibiliworld-2021.jpg" width="1920" height="1440" alt="" loading="lazy" decoding="async" />
@@ -38,8 +39,8 @@
 
       <nav class="doc-nav" aria-label="Categories">
         <a href="#music">Music</a>
-        <a href="#lyrics">Lyrics</a>
         <a href="#tts">Text-to-Speech</a>
+        <a href="#ai">AI Chat</a>
         <a href="#discovery">Discovery</a>
         <a href="#admin">Admin</a>
         <a href="#utility">Utility</a>
@@ -47,33 +48,23 @@
 
       <section class="doc-category" id="music">
         <h2>Music</h2>
-        <div class="doc-card"><p class="doc-name">/play</p><div class="doc-field"><span class="doc-label">Does</span><span>Play a track from a search query or URL.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/play yorushika spring thief</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/search</p><div class="doc-field"><span class="doc-label">Does</span><span>Search and pick from several results.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/search kaibutsu</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/queue</p><div class="doc-field"><span class="doc-label">Does</span><span>Show what is playing and what is next.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/queue</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/now</p><div class="doc-field"><span class="doc-label">Does</span><span>Show the current track.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/now</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/skip</p><div class="doc-field"><span class="doc-label">Does</span><span>Skip to the next track.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/skip</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/pause</p><div class="doc-field"><span class="doc-label">Does</span><span>Pause playback.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/pause</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/resume</p><div class="doc-field"><span class="doc-label">Does</span><span>Resume playback.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/resume</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/stop</p><div class="doc-field"><span class="doc-label">Does</span><span>Stop playback and clear the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/stop</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/leave</p><div class="doc-field"><span class="doc-label">Does</span><span>Disconnect the bot from voice.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/leave</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/loop</p><div class="doc-field"><span class="doc-label">Does</span><span>Loop the track or the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/loop</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/shuffle</p><div class="doc-field"><span class="doc-label">Does</span><span>Shuffle the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/shuffle</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/remove</p><div class="doc-field"><span class="doc-label">Does</span><span>Remove a track from the queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/remove 3</span></span></div></div>
-        <div class="doc-card"><p class="doc-name">/clear</p><div class="doc-field"><span class="doc-label">Does</span><span>Clear the whole queue.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/clear</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/join</p><div class="doc-field"><span class="doc-label">Does</span><span>Join your current voice channel and stay connected for TTS and AI replies.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/join</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/leave</p><div class="doc-field"><span class="doc-label">Does</span><span>Disconnect Keking from the voice channel.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/leave</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">Music playback temporarily disabled</p><div class="doc-field"><span class="doc-label">Status</span><span>Only <span class="doc-code">/join</span>, <span class="doc-code">/leave</span>, and <span class="doc-code">/tts</span> are active. Set <span class="doc-code">MUSIC_ENABLED=true</span> and redeploy commands to restore playback commands.</span></div></div>
       </section>
 
       <figure class="band band-slim" aria-label="Keqing cosplay">
         <img src="assets/cosplay-of-keqing-icic-d1.jpg" width="1920" height="1442" alt="" loading="lazy" decoding="async" />
       </figure>
 
-      <section class="doc-category" id="lyrics">
-        <h2>Lyrics</h2>
-        <div class="doc-card"><p class="doc-name">/lyrics</p><div class="doc-field"><span class="doc-label">Does</span><span>Show lyrics for the current track, or search by name.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/lyrics spring thief</span></span></div></div>
-      </section>
-
       <section class="doc-category" id="tts">
         <h2>Text-to-Speech</h2>
-        <div class="doc-card"><p class="doc-name">/tts</p><div class="doc-field"><span class="doc-label">Does</span><span>Speak text aloud in your voice channel.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/tts good morning everyone</span></span></div></div>
+        <div class="doc-card"><p class="doc-name">/tts</p><div class="doc-field"><span class="doc-label">Does</span><span>Speak text aloud in your voice channel. Uses ElevenLabs when configured; otherwise Google Translate TTS.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/tts good morning everyone</span></span></div></div>
+      </section>
+
+      <section class="doc-category" id="ai">
+        <h2>AI Chat</h2>
+        <div class="doc-card"><p class="doc-name">Mention / Reply</p><div class="doc-field"><span class="doc-label">Does</span><span>Chat with Keqing, the Yuheng of the Liyue Qixing. No slash command is used.</span></div><div class="doc-field"><span class="doc-label">Use</span><span>Mention <span class="doc-code">@Keking</span> with a message, or reply to any message Keking created.</span></div><div class="doc-field"><span class="doc-label">Reply context</span><span>If you reply to a message, that referenced message is included as quoted context for the reply.</span></div><div class="doc-field"><span class="doc-label">Channel recap</span><span>Ask casually by mention or reply: “summarize this conversation”, “what happened in this channel?”, or “ringkas percakapan ini”. Up to 50 recent messages are used for that reply only.</span></div><div class="doc-field"><span class="doc-label">Voice</span><span>If Keking is in a voice channel (for example after <span class="doc-code">/join</span> or <span class="doc-code">/tts</span>), it speaks the reply with TTS.</span></div></div>
       </section>
 
       <section class="doc-category" id="discovery">
@@ -83,6 +74,7 @@
 
       <section class="doc-category" id="admin">
         <h2>Admin</h2>
+        <div class="doc-card"><p class="doc-name">/ai</p><div class="doc-field"><span class="doc-label">Does</span><span>Turn AI chat on or off for this server. Needs Manage Server or the bot owner.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/ai enabled:false</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/social-preview</p><div class="doc-field"><span class="doc-label">Does</span><span>Turn link-preview cards on or off, per server, domain, or channel. Needs Manage Server.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/social-preview enabled:False domain:Facebook</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/botstats</p><div class="doc-field"><span class="doc-label">Does</span><span>Show bot health and uptime.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/botstats</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/guildinfo</p><div class="doc-field"><span class="doc-label">Does</span><span>Show info about this server.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/guildinfo</span></span></div></div>
@@ -90,6 +82,7 @@
 
       <section class="doc-category" id="utility">
         <h2>Utility</h2>
+        <div class="doc-card"><p class="doc-name">/forget</p><div class="doc-field"><span class="doc-label">Does</span><span>Delete your stored AI conversation memory for this server. Manage Server admins can target another user or clear all memory.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/forget</span> · <span class="doc-code">/forget user:@user</span> · <span class="doc-code">/forget all:true</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/help</p><div class="doc-field"><span class="doc-label">Does</span><span>List commands.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/help</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/ping</p><div class="doc-field"><span class="doc-label">Does</span><span>Check the bot's latency.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/ping</span></span></div></div>
         <div class="doc-card"><p class="doc-name">/server</p><div class="doc-field"><span class="doc-label">Does</span><span>Show basic server info.</span></div><div class="doc-field"><span class="doc-label">Use</span><span><span class="doc-code">/server</span></span></div></div>
@@ -100,6 +93,7 @@
       <a class="wordmark" href="index.html">Keking</a>
       <nav class="footer-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="privacy.html">Privacy</a>
         <a href="toc.html">Terms</a>
       </nav>

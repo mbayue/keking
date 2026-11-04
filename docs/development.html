@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Development — Keking</title>
+    <meta name="description" content="Keking source layout, tests, coverage, and CI." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  </head>
+  <body>
+    <header class="nav">
+      <a class="wordmark" href="index.html"><img src="assets/mark.svg" alt="" width="32" height="32">Keking</a>
+      <nav class="nav-links">
+        <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
+        <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
+        <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
+      </nav>
+    </header>
+
+    <main class="page policy">
+      <div class="page-head">
+        <h1>Development.</h1>
+        <p>Architecture, tests, and the CI gate behind Keking.</p>
+        <p>
+          <a href="https://github.com/mbayue/keking/actions/workflows/ci.yml" target="_blank" rel="noopener">CI status on GitHub</a>
+        </p>
+      </div>
+
+      <h3>Project structure</h3>
+      <ul>
+        <li><code>src/ai/keqing/</code> — AI chat, completion, memory, persona, and Discord handler</li>
+        <li><code>src/social/</code> — link-domain registry, rewriting, cards, and message/reaction handlers</li>
+        <li><code>src/music/</code> — player lifecycle, player events, and lyrics</li>
+        <li><code>src/tts/</code> — ElevenLabs/Google synthesis and the TTS extractor</li>
+        <li><code>src/commands/</code> — admin, integrations, music, and utility slash commands</li>
+        <li><code>src/db/</code> — Drizzle schema and PostgreSQL storage</li>
+        <li><code>src/events/</code>, <code>src/loaders/</code>, <code>src/structures/</code> — gateway wiring and discovery</li>
+        <li><code>scripts/</code> — deploy, clear, and smoke entry points</li>
+        <li><code>test/</code> — tests mirrored by domain</li>
+      </ul>
+
+      <h3>Tests and coverage</h3>
+      <p>Run the suite or the coverage gate from the repository root:</p>
+      <pre><code>bun test
+bun run test:coverage</code></pre>
+      <p>
+        <code>bunfig.toml</code> enforces 100% line and function coverage for the unit-testable core:
+        configuration, database storage, AI completion/memory/persona, NovelPia, lyrics, social link
+        logic, TTS providers, embeds, and the module loader.
+      </p>
+      <p>
+        Discord/player/social-rendering adapters, bootstrap, and external clients are explicitly
+        excluded in <code>bunfig.toml</code>.
+      </p>
+
+      <h3>Continuous integration</h3>
+      <p>
+        <a href="https://github.com/mbayue/keking/actions/workflows/ci.yml" target="_blank" rel="noopener">CI</a>
+        runs on pushes and pull requests to <code>master</code>:
+      </p>
+      <ul>
+        <li><code>bun install --frozen-lockfile</code></li>
+        <li><code>bun run check</code></li>
+        <li><code>bun run test:coverage</code> against a PostgreSQL 16 service</li>
+        <li><code>bun run build</code></li>
+      </ul>
+
+      <h3>Operational scripts</h3>
+      <ul>
+        <li><code>bun run deploy:commands</code> — deploy slash commands</li>
+        <li><code>bun run deploy:clear-commands</code> — clear deployed commands</li>
+        <li><code>bun run smoke</code> — verify schema, command registration, AI config, and TTS state</li>
+      </ul>
+    </main>
+
+    <script>
+      document.querySelectorAll(".policy h3, .policy p, .policy li").forEach((el, i) => {
+        el.classList.add("reveal");
+        el.style.transitionDelay = (i % 4) * 60 + "ms";
+      });
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        }
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    </script>
+
+    <footer class="footer">
+      <a class="wordmark" href="index.html">Keking</a>
+      <nav class="footer-links">
+        <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="toc.html">Terms</a>
+      </nav>
+      <p class="credit">Cosplay photos: “Cosplay of Keqing (ICIC, d1)” by Leiem and “Cosplay of Fischl &amp; Keqing (BilibiliWorld 2021)” by 郭骏程, CC BY-SA 4.0, via Wikimedia Commons.</p>
+    </footer>
+  </body>
+</html>

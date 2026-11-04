@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand } from '../../structures/command.js';
-import { getPlayer } from '../../utils/music.js';
+import { getPlayer } from '../../music/player.js';
 import { createInfoEmbed } from '../../utils/embeds.js';
 
 export const command: SlashCommand = {
+  requiresMusic: true,
   data: new SlashCommandBuilder()
     .setName('resume')
     .setDescription('Resume the paused music'),

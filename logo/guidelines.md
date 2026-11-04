@@ -12,7 +12,6 @@ An electro-vision diamond with a hollow core. Original geometry — no HoYoverse
 | `favicon.svg` | Browser tab / shortcut icon. Legible at 16 px as drawn. |
 | `final-horizontal.svg`, `final-stacked.svg` | Lockups. **INTERIM: live `<text>` in Jost SemiBold — convert to outlines before production.** |
 | `export/` | PNG renditions: app icon, apple-touch-icon, favicon 16/32, violet + white variants. |
-| `concept-*.svg`, `concepts-round1.png`, `cmp-*.png`, `board.png` | Process record. Do not ship. |
 
 ## Colour
 - Electro `#8B5CF6` — the mark, CTAs on dark.

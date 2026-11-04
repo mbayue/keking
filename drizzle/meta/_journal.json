@@ -22,6 +22,20 @@
       "when": 1793285475735,
       "tag": "0002_social-preview-scopes",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793620068205,
+      "tag": "0003_bouncy_skrulls",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793621142169,
+      "tag": "0004_glorious_cerise",
+      "breakpoints": true
     }
   ]
 }

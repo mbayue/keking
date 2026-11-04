@@ -20,6 +20,7 @@
       <a class="wordmark" href="index.html"><img src="assets/mark.svg" alt="" width="32" height="32">Keking</a>
       <nav class="nav-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="https://github.com/mbayue/keking" target="_blank" rel="noopener">GitHub</a>
         <a class="nav-cta" href="https://s.id/keking" target="_blank" rel="noopener">Add to Discord</a>
       </nav>
@@ -37,26 +38,27 @@
 
 
       <h3>1. Data We Read</h3>
-      <p>When you invite Keking, the bot reads server IDs, channel IDs, voice states, and the messages it needs to answer commands and spot links.</p>
+      <p>When you invite Keking, the bot reads server IDs, channel IDs, voice states, and the messages it needs to answer commands, spot links, and handle AI chat mentions or replies.</p>
 
       <h3>2. How We Use It</h3>
-      <p>We use this data to make the bot work: playing the song you asked for, reading the text you sent to speech, and unfurling the link you posted.</p>
+      <p>We use this data to make the bot work: playing the song you asked for, reading the text you sent to speech, and unfurling the link you posted. If AI chat is enabled, messages that mention the bot or reply to it are sent to the configured AI provider to generate a reply. If Keking is connected to a voice channel, the reply is also sent to the configured TTS provider (Google Translate or ElevenLabs, depending on configuration) to be spoken.</p>
 
       <h3>3. Data We Store</h3>
       <p>If you enable the database, Keking stores basic server info: server ID, command settings, and link-preview preferences.</p>
-      <p>Keking stores no message text, no user profiles, and no chat history.</p>
+      <p>If AI chat is enabled, Keking stores the last 24 messages (12 exchanges) per user per server in PostgreSQL so it can continue conversations. AI memory older than 30 days is deleted automatically. Use <code>/forget</code> to delete your stored AI memory; deleting your server’s record also removes it.</p>
+      <p>Keking does not store social-preview message text or user profiles.</p>
 
       <h3>4. Message Content</h3>
-      <p>Keking scans messages in real time to fix bad social media links. We do not save this text. We do not use it to build profiles.</p>
+      <p>Keking scans messages in real time to fix bad social media links. We do not save this text. We do not use it to build profiles. When you trigger AI chat, the message and the recent conversation context are sent to the configured AI provider; the last 24 messages are stored in PostgreSQL for continuity. If you reply to a message, that referenced message is included as quoted context for that request only and is not stored as AI memory. If you explicitly ask for a channel recap (for example, “summarize this conversation”), up to 50 recent messages are sent to the AI provider for that request only and are not stored as AI memory.</p>
 
       <h3>5. AI Training</h3>
-      <p>We do not train AI models on your messages or data.</p>
+      <p>We do not train AI models on your messages or data. The configured AI provider's own privacy and retention policies apply to requests sent to it.</p>
 
       <h3>6. Data Sharing</h3>
-      <p>We sell nothing. We share nothing. Keking only sends queries to external APIs (like Genius or YouTube) when you ask it to find lyrics or songs.</p>
+      <p>We sell nothing. Keking sends queries to external APIs only for the feature you use: Genius or YouTube for lyrics and music, mirror and metadata services for link previews, the configured AI provider for AI chat, and the configured TTS provider (Google Translate or ElevenLabs) for spoken replies.</p>
 
       <h3>7. Deletion</h3>
-      <p>Kick the bot, and it stops reading data. If you run the database, deleting your server's record removes what was stored.</p>
+      <p>Use <code>/forget</code> to delete your stored AI memory. Server admins can use <code>/forget all</code> to delete all AI memory in the server. Kick the bot to stop it reading new data. If you run the database, deleting your server's record also removes its stored AI memory and settings.</p>
 
       <h3>8. Contact</h3>
       <p>Create an issue on GitHub if you need help with your data.</p>
@@ -80,6 +82,7 @@
       <a class="wordmark" href="index.html">Keking</a>
       <nav class="footer-links">
         <a href="commands.html">Commands</a>
+        <a href="development.html">Development</a>
         <a href="privacy.html">Privacy</a>
         <a href="toc.html">Terms</a>
       </nav>

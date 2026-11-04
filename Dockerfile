@@ -2,8 +2,8 @@ FROM oven/bun:1-slim AS deps
 
 WORKDIR /app
 
-COPY package.json ./
-RUN YOUTUBE_DL_SKIP_PYTHON_CHECK=1 bun install
+COPY package.json bun.lock ./
+RUN YOUTUBE_DL_SKIP_PYTHON_CHECK=1 bun install --frozen-lockfile
 
 FROM deps AS runtime
 

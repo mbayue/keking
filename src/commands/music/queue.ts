@@ -5,7 +5,7 @@ import {
   ButtonStyle,
 } from "discord.js";
 import type { SlashCommand } from "../../structures/command.js";
-import { getPlayer } from "../../utils/music.js";
+import { getPlayer } from "../../music/player.js";
 import { createInfoEmbed } from "../../utils/embeds.js";
 
 const PAGE_SIZE = 10;
@@ -38,6 +38,7 @@ function buildQueueEmbed(current: string | null, queue: string[], page: number) 
 }
 
 export const command: SlashCommand = {
+  requiresMusic: true,
   data: new SlashCommandBuilder()
     .setName("queue")
     .setDescription("Show the current music queue"),

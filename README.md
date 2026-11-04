@@ -1,23 +1,30 @@
 # Keking
 
+[![CI](https://github.com/mbayue/keking/actions/workflows/ci.yml/badge.svg)](https://github.com/mbayue/keking/actions/workflows/ci.yml)
+
 Keking is a Discord bot built with `discord.js` and TypeScript. It focuses on music playback, text-to-speech, social-link preview helpers, and a small set of utility and admin commands.
+
+> **Current mode:** music playback is temporarily disabled. `/join`, `/leave`, and `/tts` remain available; set `MUSIC_ENABLED=true` to re-enable the music commands.
 
 ## Features
 
-- Music playback from YouTube links, Spotify links, and search queries
-- Queue controls: play, skip, pause, resume, stop, shuffle, remove, clear, loop
-- Lyrics lookup through Genius
+- Music playback from YouTube links, Spotify links, and search queries (disabled by default; `/tts` stays active)
+- Queue controls: play, skip, pause, resume, stop, shuffle, remove, clear, loop (disabled by default)
+- Lyrics lookup through Genius (disabled by default)
 - Text-to-speech playback in voice channels
-- Social-link preview helpers for X/Twitter, Instagram, Facebook, and Reddit links
+- Explicit `/join` and `/leave` voice controls
+- Keqing-persona AI chat on mention or reply (OpenAI-compatible API; spoken with TTS when in voice)
+- Social-link preview helpers for X/Twitter, Instagram, Facebook, Reddit, Threads, TikTok, Pixiv, Bluesky, Bilibili, Pinterest, Tumblr, Twitch, and DeviantArt
+- Social-preview scope controls via `/social-preview`
 - NovelPia search via `/pia`
-- Utility commands such as `/help`, `/ping`, and `/server`
+- Utility commands such as `/help`, `/ping`, `/server`, and `/forget`
 - Admin health commands such as `/botstats` and `/guildinfo`
 - Optional PostgreSQL storage for guild-level operational data
 - Docker-based local or production deployment
 
 ## Tech Stack
 
-- Bun 1.2+
+- Bun 1.4+
 - TypeScript
 - `discord.js`
 - `discord-player`
@@ -25,31 +32,61 @@ Keking is a Discord bot built with `discord.js` and TypeScript. It focuses on mu
 - PostgreSQL (`pg`)
 - Docker / Docker Compose
 
+## Project Structure
+
+```text
+src/
+  ai/keqing/          AI chat, completion, memory, persona, Discord handler
+  social/             Link-domain registry, rewriting, cards, message/reaction handlers
+  music/              Player lifecycle, player events, lyrics
+  tts/                ElevenLabs/Google synthesis + the TTS extractor
+  commands/           admin, integrations, music, utility slash commands
+  db/                 Drizzle schema + PostgreSQL storage
+  events/             Discord gateway event wiring
+  loaders/            Command and event discovery
+  structures/         Command/event interfaces
+  utils/              Embeds, permissions, deployment, file loading
+  config.ts           Environment-backed configuration
+  index.ts            Bot bootstrap
+scripts/              deploy-commands, clear-commands, smoke
+test/                 Domain-mirrored tests (ai, api, db, music, social, tts, utils)
+bunfig.toml           Coverage threshold and exclusion rules
+```
+
+The shared deployment logic stays in `src/utils/deploy-commands.ts` because startup and guild events call it; the standalone entry points live in `scripts/`.
+
+## Testing and Coverage
+
+```bash
+bun test
+bun run test:coverage
+```
+
+`bunfig.toml` enforces 100% line and function coverage for the unit-testable core: configuration, database storage, AI completion/memory/persona, NovelPia, lyrics, social link logic, TTS providers, embeds, and the module loader. Discord/player/social-rendering adapters, bootstrap, and external clients are explicitly excluded in `bunfig.toml`.
+
+CI (`.github/workflows/ci.yml`) runs `bun run check`, `bun run test:coverage` against a PostgreSQL service, and `bun run build` on pushes and pull requests to `master`.
+
 ## Commands
 
 ### Utility
 
+- `/forget` - delete your stored AI memory for this server (admins can target another user or use `all`)
 - `/help` - list available commands
 - `/ping` - show gateway latency
 - `/server` - show basic server info
 
 ### Music
 
-- `/play` - play a track from a URL
-- `/search` - search for a track and pick from buttons
-- `/queue` - show the current queue
-- `/now` - show the current track
-- `/pause` - pause playback
-- `/resume` - resume playback
-- `/skip` - skip the current track
-- `/stop` - stop playback and clear the queue
+- `/join` - join your current voice channel and stay connected
 - `/leave` - disconnect from voice
-- `/shuffle` - shuffle the queue
-- `/remove` - remove a track from the queue
-- `/clear` - clear queued tracks
-- `/loop` - change repeat mode
-- `/lyrics` - fetch lyrics for the current or requested song
 - `/tts` - play text-to-speech in voice
+
+Music playback commands (`/play`, `/search`, `/queue`, `/now`, `/pause`, `/resume`, `/skip`, `/stop`, `/shuffle`, `/remove`, `/clear`, `/loop`, `/lyrics`) are implemented but disabled by default. Set `MUSIC_ENABLED=true` to load them. `/join`, `/leave`, and `/tts` remain available.
+
+### AI
+
+- Mention the bot or reply to one of its messages to chat with Keqing.
+- There is no `/chat` command.
 
 ### Integrations
 
@@ -57,8 +94,10 @@ Keking is a Discord bot built with `discord.js` and TypeScript. It focuses on mu
 
 ### Admin
 
+- `/ai` - enable or disable AI chat for this server (Manage Server or bot owner)
 - `/botstats` - show uptime, memory, ping, and voice dependency health
 - `/guildinfo` - show guild and deployment info
+- `/social-preview` - toggle link previews for the server, one domain, or one channel (Manage Server)
 
 ## Social Preview Behavior
 
@@ -85,6 +124,62 @@ Replies render as rich cards (author, media, stats — FixEmbed-style) via the f
 
 This behavior depends on the bot being able to read guild message content.
 
+## AI Chat (Keqing)
+
+Keking can roleplay Keqing, the Yuheng of the Liyue Qixing. It answers only when:
+
+- the message mentions the bot; or
+- the message replies to a message authored by the bot.
+
+There is no `/chat` command.
+
+When you reply to one of Keking's messages, the referenced message is included as quoted context for that request. It is capped, treated as untrusted data rather than instructions, and is not added to stored AI memory.
+
+You can also ask for a casual channel recap by mentioning Keking or replying to it, for example: “summarize this conversation”, “what happened in this channel?”, “ringkas percakapan ini”, or “catch me up”. Keking reads up to 50 recent messages for that request only; the history is sent to the AI provider and is not stored as memory. There is no `/summarize` command.
+
+Admins with Manage Server, or the bot owner (`330320305606230016`), can use `/ai` to enable or disable AI chat for the server. Disabling it stops AI mention/reply responses and spoken AI replies; `/tts` still works.
+
+Discord mentions are resolved into the mentioned user’s display name, username, and ID for the model. Plain-text names that are not Discord mentions are not guessed; ask the user to mention the person or provide an ID.
+
+If Keking is already connected to a voice channel in the same server, the reply is also spoken there through the configured TTS provider: ElevenLabs when `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` are set, otherwise Google Translate’s Indonesian TTS. Spoken replies are capped at 1,200 characters. Use `/join` (or `/tts`) once to bring Keking into a voice channel; while it stays connected, AI replies are spoken there. `/leave` disconnects.
+
+Chat requires an OpenAI-compatible chat-completions endpoint. Model routing:
+
+- Normal chat: `AI_MODEL` first, then `AI_FALLBACK_MODEL`, then `AI_PREMIUM_MODEL`
+- Image attachments: `AI_VISION_MODEL`
+- Explicit image-generation requests: `AI_IMAGE_MODEL`
+
+- `AI_API_KEY` - API key; chat is disabled when unset
+- `AI_BASE_URL` - endpoint base, default `https://api.openai.com/v1`
+- `AI_MODEL` - primary chat model, default `spur-qwen3-8b`
+- `AI_FALLBACK_MODEL` - fallback chat model, default `spur-qwen2.5-7b`
+- `AI_PREMIUM_MODEL` - last-resort premium model, default `spur-glm-air`
+- `AI_VISION_MODEL` - image-understanding model, default `spur-gemma4`
+- `AI_IMAGE_MODEL` - image-generation model, default `sdxl`
+- `AI_MAX_TOKENS` - reply token cap, default `220`
+
+Conversation memory is persisted per user per server in PostgreSQL: the last 24 messages (12 exchanges), capped at 12,000 characters. It follows the user across channels and survives restarts. Use `/forget` to clear your own memory; Manage Server admins or the bot owner can clear another user’s memory or use `/forget all`. Rows older than `AI_MEMORY_RETENTION_DAYS` (default `30`) are pruned at startup and daily. Deleting the guild record also removes its AI memory.
+
+This is a fan roleplay and is not affiliated with HoYoverse.
+
+## TTS Voice (ElevenLabs, optional)
+
+Keking uses Google Translate TTS by default. To use an ElevenLabs voice instead:
+
+1. Create an ElevenLabs account.
+2. Create an original anime-style voice with Voice Design, or choose a voice whose license permits your use.
+3. Copy its voice ID.
+4. Set `ELEVENLABS_ENABLED=true`, `ELEVENLABS_API_KEY`, and `ELEVENLABS_VOICE_ID` in `.env`, then restart.
+
+Optional settings:
+
+- `ELEVENLABS_ENABLED` - default `false`; set to `true` to use ElevenLabs instead of Google Translate TTS
+- `ELEVENLABS_MODEL_ID` - default `eleven_multilingual_v2` (supports Indonesian)
+
+The ElevenLabs free plan is **non-commercial** and requires attribution. Keking does not add an attribution line; use a paid plan or verify that your use complies with ElevenLabs’ terms. Do not use unofficial Keqing voice clones.
+
+If ElevenLabs is not configured or the voice ID is missing, Keking falls back to Google Translate TTS.
+
 ## Gateway Intents
 
 The bot currently initializes with these intents:
@@ -97,7 +192,7 @@ The bot currently initializes with these intents:
 `MessageContent` is used for:
 
 - social-link preview replies
-- mention-based message replies
+- AI chat mentions and replies to bot messages
 
 The current repo does not implement a Presence-based feature.
 
@@ -113,6 +208,20 @@ Required:
 Optional:
 
 - `DISCORD_GUILD_ID` - deploy commands to a single guild for faster iteration
+- `MUSIC_ENABLED` - set to `true` to load music playback commands (default: `false`; `/tts` is always loaded)
+- `AI_API_KEY` - OpenAI-compatible API key for Keqing chat
+- `AI_BASE_URL` - chat-completions base URL (default: `https://api.openai.com/v1`)
+- `AI_MODEL` - primary chat model (default: `spur-qwen3-8b`)
+- `AI_FALLBACK_MODEL` - fallback chat model (default: `spur-qwen2.5-7b`)
+- `AI_PREMIUM_MODEL` - premium fallback model (default: `spur-glm-air`)
+- `AI_VISION_MODEL` - model for image attachments (default: `spur-gemma4`)
+- `AI_IMAGE_MODEL` - model for explicit image generation (default: `sdxl`)
+- `AI_MAX_TOKENS` - maximum reply tokens (default: `220`)
+- `AI_MEMORY_RETENTION_DAYS` - delete AI memory older than this many days (default: `30`)
+- `ELEVENLABS_ENABLED` - set to `true` to use ElevenLabs TTS (default: `false`, Google Translate TTS)
+- `ELEVENLABS_API_KEY` - optional ElevenLabs API key
+- `ELEVENLABS_VOICE_ID` - required with the API key when ElevenLabs is enabled
+- `ELEVENLABS_MODEL_ID` - ElevenLabs model (default: `eleven_multilingual_v2`)
 - `DATABASE_URL` - enable PostgreSQL storage
 - `POSTGRES_DB` - used by the bundled Docker Compose database
 - `POSTGRES_USER` - used by the bundled Docker Compose database
@@ -125,6 +234,20 @@ Example:
 DISCORD_TOKEN=your-bot-token
 DISCORD_CLIENT_ID=your-application-client-id
 DISCORD_GUILD_ID=optional-guild-id-for-faster-command-deploy
+MUSIC_ENABLED=false
+AI_API_KEY=your-openai-compatible-key
+AI_BASE_URL=https://api.openai.com/v1
+AI_MODEL=spur-qwen3-8b
+AI_FALLBACK_MODEL=spur-qwen2.5-7b
+AI_PREMIUM_MODEL=spur-glm-air
+AI_VISION_MODEL=spur-gemma4
+AI_IMAGE_MODEL=sdxl
+AI_MAX_TOKENS=220
+AI_MEMORY_RETENTION_DAYS=30
+ELEVENLABS_ENABLED=false
+ELEVENLABS_API_KEY=your-elevenlabs-key
+ELEVENLABS_VOICE_ID=your-voice-id
+ELEVENLABS_MODEL_ID=eleven_multilingual_v2
 DATABASE_URL=postgresql://postgres:password@localhost:5432/keking
 POSTGRES_DB=keking
 POSTGRES_USER=postgres
@@ -146,6 +269,13 @@ Run in watch mode:
 bun run dev
 ```
 
+Run tests and the coverage gate:
+
+```bash
+bun test
+bun run test:coverage
+```
+
 Build:
 
 ```bash
@@ -165,6 +295,14 @@ Deploy commands:
 ```bash
 bun run deploy:commands
 ```
+
+After deployment, run the smoke test:
+
+```bash
+bun run smoke
+```
+
+It verifies the database schema and that the expected 12 commands are registered in the configured scope.
 
 Clear deployed commands:
 
@@ -210,17 +348,24 @@ When `DATABASE_URL` is configured, the bot stores limited guild-level operationa
 - guild ID
 - guild name
 - command deployment hash
+- AI chat memory (last 24 messages per user per server)
+- social-preview settings
 - join timestamp
 - update timestamp
 
-It does not intentionally store message-content history in the database as part of normal operation.
+Social-preview message text is not stored. AI chat memory is persistent until `/forget` or guild deletion; see the AI Chat section.
 
 ## Docs
+
+Markdown docs:
+
+- deployment guide: [`DEPLOYMENT.md`](./DEPLOYMENT.md)
 
 Static docs live in [`docs/`](./docs), including:
 
 - landing page: [`docs/index.html`](./docs/index.html)
 - command reference: [`docs/commands.html`](./docs/commands.html)
+- development guide: [`docs/development.html`](./docs/development.html)
 - privacy policy: [`docs/privacy.html`](./docs/privacy.html)
 
 ## License

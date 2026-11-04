@@ -1,10 +1,11 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from 'discord.js';
 import type { SlashCommand } from '../../structures/command.js';
-import { getPlayer } from '../../utils/music.js';
+import { getPlayer } from '../../music/player.js';
 import { createErrorEmbed, createInfoEmbed } from '../../utils/embeds.js';
 import { MissingBotPermissionsError, createMissingPermissionsReply } from '../../utils/permissions.js';
 
 export const command: SlashCommand = {
+  requiresMusic: true,
   data: new SlashCommandBuilder()
     .setName('search')
     .setDescription('Search for a track and select one to play')

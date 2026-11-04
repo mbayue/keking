@@ -52,8 +52,26 @@ bun run docker:logs
 bun run docker:down
 ```
 
+## CI and tests
+
+GitHub Actions runs on pushes and pull requests to `master`:
+
+- `bun install --frozen-lockfile`
+- `bun run check`
+- `bun run test:coverage` against a PostgreSQL 16 service
+- `bun run build`
+
+Run the same checks locally with:
+
+```bash
+bun run check
+bun run test:coverage
+bun run build
+```
+
 ## Notes
 
-- The bot already syncs guild records and deploys commands on startup/join.
-- If you want to force a refresh, use `/sync force:true`.
+- The bot syncs guild records and deploys commands on startup/join. `/guildinfo` shows deployment info.
+- To redeploy commands manually, run `bun run deploy:commands`. Unchanged command payloads are skipped using the stored hash.
 - For managed Postgres providers, point `DATABASE_URL` at the external database and remove or ignore the local `db` service.
+- See [`README.md`](./README.md#project-structure) for the source layout.
