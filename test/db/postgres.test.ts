@@ -2,7 +2,9 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { Pool } from "pg";
 
 import { config } from "../../src/config.ts";
+import { renderPrometheus, resetMetrics } from "../../src/observability/metrics.ts";
 import {
+  checkDatabaseConnection,
   closeDb,
   createDatabase,
   deleteAiChatMemory,
@@ -72,6 +74,18 @@ describeDb("postgres storage", () => {
     const local = createDatabase(requireDatabaseUrl());
     expect(local.pool).toBeDefined();
     expect(local.database).toBeDefined();
+    await local.pool.end();
+  });
+
+  test("counts pool errors and verifies the database connection", async () => {
+    resetMetrics();
+    const local = createDatabase(requireDatabaseUrl());
+
+    local.pool.emit("error", new Error("pool failure"));
+    expect(renderPrometheus()).toContain("keking_db_pool_errors_total 1");
+
+    await checkDatabaseConnection();
+
     await local.pool.end();
   });
 

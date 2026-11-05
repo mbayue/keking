@@ -89,6 +89,7 @@ Image understanding uses attachment URLs, not base64 data URLs. Base64 images ca
 | `src/events/` | Gateway event adapters |
 | `src/loaders/` | Recursive command/event loading |
 | `src/utils/` | Embeds, permissions, deployment, file loading |
+| `src/observability/` | Structured logger, Prometheus metric registry, health/metrics HTTP server |
 | `src/structures/` | Command/event type contracts |
 | `scripts/` | Deploy, clear, smoke probes; `tmp-*` files are scratch |
 | `test/` | Domain-mirrored Bun tests |
@@ -142,6 +143,7 @@ docker compose up -d db     # local Postgres on host port 5433
 - Database: `src/db/postgres.ts`, `src/db/schema.ts`, `drizzle/`
 - Command deployment: `src/utils/deploy-commands.ts`
 - Loader: `src/utils/load-files.ts`, `src/loaders/commands.ts`
+- Observability: `src/observability/logger.ts`, `src/observability/metrics.ts`, `src/observability/health.ts`
 - Coverage/config: `bunfig.toml`, `tsconfig.json`, `package.json`
 - CI: `.github/workflows/ci.yml`
 - Container: `Dockerfile`, `docker-compose.yml`
@@ -160,13 +162,16 @@ docker compose up -d db     # local Postgres on host port 5433
 - CI does not run smoke, does not deploy, and does not need an AI key.
 - `scripts/` and `bunfig.toml` are not copied into the Docker image, so operational scripts and the smoke check cannot run inside the container.
 - Docker Compose overrides `DATABASE_URL` with the `db` service URL; changing `.env` alone does not repoint a containerized bot.
+- Health server: binds `HEALTH_HOST` (default `127.0.0.1`) on `HEALTH_PORT`. `/metrics` requires a bearer token whenever one is configured and rejects all requests on a non-loopback bind without one; the bot refuses to start in that configuration.
+- Docker Compose sets `HEALTH_HOST=0.0.0.0` and publishes the port with `expose:` on the private compose network, so `METRICS_TOKEN` is required in containers.
+- A real process environment variable beats `.env`. When a launched process still shows stale model values, check the inherited environment before `.env`.
 
 ## Testing & QA
 
 - Framework: Bun's built-in `bun:test`. No Jest/Vitest.
 - Tests mirror source domains under `test/<domain>/<module>.test.ts`.
 - Coverage gate: `bunfig.toml` requires **100% lines and functions**. There is no branch threshold.
-- Coverage exclusions are deliberate adapter/bootstrap files: commands, events, loaders, player/events, social cards/handlers, TTS extractor, AI handler/index, Discord permissions/deploy utilities, and type-only structures.
+- Coverage exclusions are deliberate adapter/bootstrap files: commands, events, loaders, player/events, social cards/handlers, TTS extractor, AI handler/index, Discord permissions/deploy utilities, and type-only structures. The observability modules are covered and must stay at 100%.
 - Bun reports only modules loaded by tests. A new unimported module is absent from the report; once imported, it must reach 100%.
 - The PostgreSQL integration test is mandatory for the gate. It requires `DATABASE_URL`, runs migrations, uses a unique guild/message ID, creates a raw `pg` pool for timestamp manipulation, and closes both pools in `afterAll`.
 - Start the compose database before local coverage:

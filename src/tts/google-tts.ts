@@ -1,4 +1,9 @@
 import { Readable } from "node:stream";
+import {
+  incrementCounter,
+  observeDuration,
+} from "../observability/metrics.js";
+
 
 const GOOGLE_TTS_HOST = "https://translate.google.com";
 const GOOGLE_TTS_LANGUAGE = "id";
@@ -12,6 +17,7 @@ async function getAudioBase64(text: string): Promise<string> {
   const controller = new AbortController();
   const timeoutId = setTimeout(controller.abort.bind(controller), GOOGLE_TTS_TIMEOUT_MS);
 
+  const startedAt = performance.now();
   try {
     const response = await fetch(`${GOOGLE_TTS_HOST}/_/TranslateWebserverUi/data/batchexecute`, {
       method: "POST",
@@ -25,8 +31,10 @@ async function getAudioBase64(text: string): Promise<string> {
     });
 
     if (!response.ok) {
+      incrementCounter("keking_tts_requests_total", { provider: "google", status: `http_${response.status}` });
       throw new Error(`Google TTS request failed with status ${response.status}`);
     }
+
 
     const data = await response.text();
     let parsed: BatchExecuteResponse;
@@ -46,7 +54,10 @@ async function getAudioBase64(text: string): Promise<string> {
       throw new Error("Google TTS returned an unexpected payload.");
     }
 
-    return decoded[0];
+    const result = decoded[0];
+    incrementCounter("keking_tts_requests_total", { provider: "google", status: "ok" });
+    observeDuration("keking_tts_request_duration_seconds", (performance.now() - startedAt) / 1000, { provider: "google", status: "ok" });
+    return result;
   } finally {
     clearTimeout(timeoutId);
   }

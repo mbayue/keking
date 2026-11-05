@@ -21,6 +21,10 @@ describe("config", () => {
     expect(config.aiImageModel).toBe("sdxl");
     expect(config.aiMaxTokens).toBe(1200);
     expect(config.aiMemoryRetentionDays).toBe(30);
+    expect(config.healthEnabled).toBe(true);
+    expect(config.healthHost).toBe("127.0.0.1");
+    expect(config.healthPort).toBe(3000);
+    expect(config.metricsToken).toBeUndefined();
     expect(config.elevenLabsModelId).toBe("eleven_multilingual_v2");
     expect(config.botOwnerId).toBe("330320305606230016");
   });
@@ -80,6 +84,44 @@ describe("config", () => {
 
     expect(config.aiMaxTokens).toBe(1200);
     expect(config.aiMemoryRetentionDays).toBe(30);
+  });
+
+  test("requires a metrics token for non-loopback health binds", () => {
+    expect(() =>
+      loadConfig({
+        ...required,
+        HEALTH_HOST: "0.0.0.0",
+      }),
+    ).toThrow("METRICS_TOKEN must be set when HEALTH_HOST is not a loopback address");
+  });
+
+  test("allows a non-loopback health bind when a metrics token is set", () => {
+    const config = loadConfig({
+      ...required,
+      HEALTH_HOST: "0.0.0.0",
+      METRICS_TOKEN: "secret",
+    });
+
+    expect(config.healthHost).toBe("0.0.0.0");
+    expect(config.metricsToken).toBe("secret");
+  });
+
+  test("allows a loopback health bind without a metrics token", () => {
+    const config = loadConfig({
+      ...required,
+      HEALTH_HOST: "127.0.0.1",
+    });
+
+    expect(config.metricsToken).toBeUndefined();
+  });
+
+  test("ignores a blank metrics token", () => {
+    const config = loadConfig({
+      ...required,
+      METRICS_TOKEN: "   ",
+    });
+
+    expect(config.metricsToken).toBeUndefined();
   });
 
   test("throws when required environment values are missing", () => {

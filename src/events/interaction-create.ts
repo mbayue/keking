@@ -6,6 +6,11 @@ import {
   type Interaction,
   type InteractionReplyOptions,
 } from "discord.js";
+import {
+  incrementCounter,
+  observeDuration,
+} from "../observability/metrics.js";
+
 
 import { config } from "../config.js";
 import type { BotEvent } from "../structures/event.js";
@@ -73,11 +78,17 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
     return;
   }
 
+  const startedAt = performance.now();
   try {
     await command.execute(interaction);
   } catch (error) {
+    incrementCounter("keking_commands_total", { command: interaction.commandName, status: "error" });
+    observeDuration("keking_command_duration_seconds", (performance.now() - startedAt) / 1000, { command: interaction.commandName, status: "error" });
     await respondToInteractionError(interaction, error, `to execute /${interaction.commandName}`, "Command Failed", "Something went wrong while running that command.");
+    return;
   }
+  incrementCounter("keking_commands_total", { command: interaction.commandName, status: "ok" });
+  observeDuration("keking_command_duration_seconds", (performance.now() - startedAt) / 1000, { command: interaction.commandName, status: "ok" });
 }
 
 async function handleMusicButtonSafely(interaction: ButtonInteraction): Promise<void> {

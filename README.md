@@ -66,6 +66,32 @@ bun run test:coverage
 
 CI (`.github/workflows/ci.yml`) runs `bun run check`, `bun run test:coverage` against a PostgreSQL service, and `bun run build` on pushes and pull requests to `master`.
 
+## Observability
+
+```text
+GET /healthz   process liveness
+GET /readyz    Discord and database readiness
+GET /metrics   Prometheus text metrics
+```
+
+Metrics currently cover command latency, AI requests, image generation, TTS requests, database pool errors, and music queues. Durations are exposed as Prometheus histograms with buckets, so `histogram_quantile` works for percentile queries.
+
+Access rules:
+
+- The health server binds `127.0.0.1` by default, so the endpoints are reachable only from the host.
+- `/metrics` requires `Authorization: Bearer $METRICS_TOKEN` whenever a token is configured, and rejects all requests when no token is set on a non-loopback bind.
+- `/healthz` and `/readyz` are unauthenticated liveness/readiness probes.
+- Setting `HEALTH_HOST` to anything other than a loopback address requires `METRICS_TOKEN`; the bot refuses to start otherwise.
+- In Docker, `docker-compose.yml` sets `HEALTH_HOST=0.0.0.0` and publishes the port on the private compose network with `expose:`. A Prometheus on the host needs `ports: ["127.0.0.1:3000:3000"]` instead.
+
+Environment settings:
+
+- `HEALTH_ENABLED` - default `true`
+- `HEALTH_HOST` - default `127.0.0.1`
+- `HEALTH_PORT` - default `3000`
+- `METRICS_TOKEN` - bearer token for `/metrics`; required for non-loopback binds
+
+
 ## Commands
 
 ### Utility

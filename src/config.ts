@@ -1,5 +1,7 @@
 // Bun autoloads .env — no dotenv import needed.
 
+import { isLoopbackHost } from "./observability/health.js";
+
 type Env = NodeJS.ProcessEnv;
 
 function getEnv(env: Env, name: string): string {
@@ -26,6 +28,16 @@ function trimTrailingSlashes(value: string): string {
 }
 
 export function loadConfig(env: Env = process.env) {
+  const metricsToken = (env.METRICS_TOKEN || "").trim() || undefined;
+  const healthHost = env.HEALTH_HOST || "127.0.0.1";
+  const healthEnabled = env.HEALTH_ENABLED !== "false";
+
+  if (healthEnabled && !isLoopbackHost(healthHost) && !metricsToken) {
+    throw new Error(
+      "METRICS_TOKEN must be set when HEALTH_HOST is not a loopback address",
+    );
+  }
+
   return {
     token: getEnv(env, "DISCORD_TOKEN"),
     clientId: getEnv(env, "DISCORD_CLIENT_ID"),
@@ -48,6 +60,10 @@ export function loadConfig(env: Env = process.env) {
     ytCookies: env.YOUTUBE_COOKIES || '',
     spotifyClientId: env.SPOTIFY_CLIENT_ID || '',
     spotifyClientSecret: env.SPOTIFY_CLIENT_SECRET || '',
+    metricsToken,
+    healthEnabled,
+    healthHost,
+    healthPort: getPositiveInt(env, "HEALTH_PORT", 3000),
     botOwnerId: env.BOT_OWNER_ID || "330320305606230016",
   };
 }

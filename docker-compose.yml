@@ -34,6 +34,11 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-keking}
       NODE_ENV: production
+      # Containers need a non-loopback bind for the health port to be reachable
+      # from the compose network. /metrics then requires METRICS_TOKEN.
+      HEALTH_HOST: 0.0.0.0
+    expose:
+      - "${HEALTH_PORT:-3000}"
 
 volumes:
   postgres_data:

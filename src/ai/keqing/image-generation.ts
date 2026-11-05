@@ -1,4 +1,9 @@
 import { config } from "../../config.js";
+import {
+  incrementCounter,
+  observeDuration,
+} from "../../observability/metrics.js";
+
 
 const MAX_PROMPT_CHARS = 1_000;
 
@@ -12,6 +17,8 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
   if (!trimmed) {
     throw new Error("No image prompt provided.");
   }
+  const startedAt = performance.now();
+  const model = config.aiImageModel;
 
   const response = await fetch(`${config.aiBaseUrl}/images/generations`, {
     method: "POST",
@@ -21,7 +28,7 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      model: config.aiImageModel,
+      model,
       prompt: trimmed,
       n: 1,
       size: "1024x1024",
@@ -30,6 +37,8 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
   });
 
   if (!response.ok) {
+    incrementCounter("keking_image_requests_total", { model, status: `http_${response.status}` });
+    observeDuration("keking_image_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status: `http_${response.status}` });
     throw new Error(`Image request failed with status ${response.status}.`);
   }
 
@@ -38,11 +47,18 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
   };
   const encoded = payload.data?.[0]?.b64_json;
   if (!encoded) {
+    incrementCounter("keking_image_requests_total", { model, status: "no_image" });
+    observeDuration("keking_image_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status: "no_image" });
     throw new Error("Image response contained no image.");
   }
+  incrementCounter("keking_image_requests_total", { model, status: "ok" });
+  observeDuration("keking_image_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status: "ok" });
+
+  const buffer = Buffer.from(encoded, "base64");
+  incrementCounter("keking_image_bytes_total", { model }, buffer.length);
 
   return {
-    buffer: Buffer.from(encoded, "base64"),
+    buffer,
     mimeType: "image/png",
   };
 }

@@ -5,6 +5,8 @@ import { and, eq, lt } from 'drizzle-orm';
 import * as schema from './schema.js';
 import { aiChatMemories, botGuilds, socialPreviewChannels, socialPreviewDomains, socialPreviewReplies, type StoredChatTurn, type StoredGuildRecord, type StoredPreviewLink } from './schema.js';
 import { config } from '../config.js';
+import { incrementCounter } from '../observability/metrics.js';
+
 
 export function createDatabase(databaseUrl: string) {
   if (!databaseUrl) {
@@ -12,11 +14,19 @@ export function createDatabase(databaseUrl: string) {
   }
 
   const pool = new Pool({ connectionString: databaseUrl });
+  pool.on('error', () => {
+    incrementCounter('keking_db_pool_errors_total');
+  });
   const database: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
   return { pool, database };
 }
 
 const { pool, database: db } = createDatabase(config.databaseUrl ?? "");
+
+export async function checkDatabaseConnection(): Promise<void> {
+  await pool.query('SELECT 1');
+}
+
 
 const PRUNE_INTERVAL_MS = 24 * 60 * 60 * 1000;
 

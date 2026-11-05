@@ -1,4 +1,9 @@
 import { config } from "../../config.js";
+import {
+  incrementCounter,
+  observeDuration,
+} from "../../observability/metrics.js";
+
 
 export const MAX_REPLY_CHARS = 400;
 
@@ -24,6 +29,7 @@ export async function requestCompletion(
 
   for (let attempt = 0; attempt < 2; attempt++) {
     let response: Response;
+    const startedAt = performance.now();
     try {
       response = await fetch(`${config.aiBaseUrl}/chat/completions`, {
         method: "POST",
@@ -41,6 +47,8 @@ export async function requestCompletion(
       });
     } catch (error) {
       lastError = error;
+      incrementCounter("keking_ai_requests_total", { model, status: "network_error" });
+      observeDuration("keking_ai_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status: "network_error" });
       if (attempt === 0) {
         await Bun.sleep(RETRY_DELAY_MS);
         continue;
@@ -49,6 +57,9 @@ export async function requestCompletion(
     }
 
     if (!response.ok) {
+      const status = `http_${response.status}`;
+      incrementCounter("keking_ai_requests_total", { model, status });
+      observeDuration("keking_ai_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status });
       if ((response.status === 429 || response.status >= 500) && attempt === 0) {
         await Bun.sleep(RETRY_DELAY_MS);
         continue;
@@ -56,6 +67,10 @@ export async function requestCompletion(
 
       throw new Error(`AI request failed with status ${response.status}.`);
     }
+
+    const status = "ok";
+    incrementCounter("keking_ai_requests_total", { model, status });
+    observeDuration("keking_ai_request_duration_seconds", (performance.now() - startedAt) / 1000, { model, status });
 
     const payload: unknown = await response.json().catch(() => null);
     const content = readAssistantContent(payload);

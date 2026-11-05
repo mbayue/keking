@@ -52,6 +52,27 @@ bun run docker:logs
 bun run docker:down
 ```
 
+## Health endpoints
+
+The bot serves `GET /healthz`, `GET /readyz`, and `GET /metrics` on `HEALTH_PORT` (default `3000`).
+
+In Docker Compose the bot binds `0.0.0.0` and publishes the port with `expose:`, so it is reachable from other containers on the compose network but not published to the host. `METRICS_TOKEN` is required in that mode and the bot refuses to start without it.
+
+To scrape from a host-level Prometheus, add a host-loopback binding to the `bot` service:
+
+```yaml
+ports:
+  - "127.0.0.1:3000:3000"
+```
+
+Scrape with the bearer token:
+
+```yaml
+authorization:
+  type: Bearer
+  credentials: <METRICS_TOKEN>
+```
+
 ## CI and tests
 
 GitHub Actions runs on pushes and pull requests to `master`:

@@ -1,4 +1,9 @@
 import { Readable } from "node:stream";
+import {
+  incrementCounter,
+  observeDuration,
+} from "../observability/metrics.js";
+
 import type { ReadableStream as NodeReadableStream } from "node:stream/web";
 
 import { config } from "../config.js";
@@ -40,6 +45,7 @@ export async function synthesizeElevenLabsSpeech(
     throw new Error("No text to synthesize.");
   }
 
+  const startedAt = performance.now();
   const audio = await client.textToSpeech.convert(config.elevenLabsVoiceId, {
     text: trimmed,
     modelId: config.elevenLabsModelId,
@@ -51,6 +57,8 @@ export async function synthesizeElevenLabsSpeech(
       useSpeakerBoost: true,
     },
   });
+  incrementCounter("keking_tts_requests_total", { provider: "elevenlabs", status: "ok" });
+  observeDuration("keking_tts_request_duration_seconds", (performance.now() - startedAt) / 1000, { provider: "elevenlabs", status: "ok" });
 
   // The SDK returns a web stream; Node's stream types describe the same shape.
   return Readable.fromWeb(audio as NodeReadableStream<Uint8Array>);
