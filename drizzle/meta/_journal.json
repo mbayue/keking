@@ -43,6 +43,13 @@
       "when": 1793880902723,
       "tag": "0005_bot_talk_toggle",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793881325218,
+      "tag": "0006_bot_talk_limits",
+      "breakpoints": true
     }
   ]
 }

@@ -6,14 +6,27 @@
  * during which peer bots are ignored.
  */
 
-/** Maximum Keqing replies in one bot-to-bot chain. */
-export const MAX_BOT_CHAIN_DEPTH = 3;
+/** Default maximum Keqing replies in one bot-to-bot chain. */
+export const DEFAULT_MAX_BOT_CHAIN_DEPTH = 20;
 
-/** How long a channel is ignored after a chain hits its depth limit. */
-export const BOT_CHAIN_COOLDOWN_MS = 5 * 60 * 1000;
+/** Default cooldown after a chain hits its depth limit. */
+export const DEFAULT_BOT_CHAIN_COOLDOWN_MS = 60 * 1000;
 
-/** Maximum peer-bot lines carried into the next turn of a chain. */
-export const MAX_CHAIN_CONTEXT_MESSAGES = 8;
+/** Bounds accepted for the per-server chain depth. */
+export const MIN_BOT_CHAIN_DEPTH = 1;
+export const MAX_ALLOWED_BOT_CHAIN_DEPTH = 100;
+
+/** Bounds accepted for the per-server cooldown, in seconds. */
+export const MIN_BOT_CHAIN_COOLDOWN_SECONDS = 10;
+export const MAX_ALLOWED_BOT_CHAIN_COOLDOWN_SECONDS = 3600;
+
+/**
+ * Maximum peer-bot lines carried into the next turn of a chain.
+ *
+ * Scaled to the chain depth so a long exchange keeps its full thread: a
+ * 20-reply chain carries both sides of the conversation.
+ */
+export const MAX_CHAIN_CONTEXT_MESSAGES = 100 * 2;
 
 const STOP_PATTERN = /\b(stop|berhenti|diam|diem|cukup)\b/i;
 // No trailing word boundary: Indonesian attaches suffixes directly
@@ -29,6 +42,11 @@ export type BotChain = {
   context: string[];
 };
 
+export type BotTalkLimits = {
+  maxDepth: number;
+  cooldownMs: number;
+};
+
 const chains = new Map<string, BotChain>();
 
 function getChain(channelId: string): BotChain {
@@ -40,6 +58,25 @@ function getChain(channelId: string): BotChain {
   const created: BotChain = { depth: 0, cooldownUntil: 0, context: [] };
   chains.set(channelId, created);
   return created;
+}
+
+/** Clamps a requested chain depth into the accepted range. */
+export function clampChainDepth(value: number): number {
+  if (!Number.isFinite(value)) {
+    return DEFAULT_MAX_BOT_CHAIN_DEPTH;
+  }
+  return Math.min(MAX_ALLOWED_BOT_CHAIN_DEPTH, Math.max(MIN_BOT_CHAIN_DEPTH, Math.trunc(value)));
+}
+
+/** Clamps a requested cooldown, in seconds, into the accepted range. */
+export function clampCooldownSeconds(value: number): number {
+  if (!Number.isFinite(value)) {
+    return Math.round(DEFAULT_BOT_CHAIN_COOLDOWN_MS / 1000);
+  }
+  return Math.min(
+    MAX_ALLOWED_BOT_CHAIN_COOLDOWN_SECONDS,
+    Math.max(MIN_BOT_CHAIN_COOLDOWN_SECONDS, Math.trunc(value)),
+  );
 }
 
 /** True when the message reads like a user telling the bots to stop. */
@@ -56,16 +93,34 @@ export function isCoolingDown(channelId: string, now: number): boolean {
  * True when Keqing may reply to a peer bot right now.
  *
  * Requires the per-guild feature flag to be on, no active cooldown, and chain
- * depth below the limit.
+ * depth below the limit. An expired cooldown clears the chain so the bots can
+ * resume instead of staying blocked forever.
  */
-export function canReplyToPeer(channelId: string, enabled: boolean, now: number): boolean {
+export function canReplyToPeer(
+  channelId: string,
+  enabled: boolean,
+  now: number,
+  limits: BotTalkLimits = {
+    maxDepth: DEFAULT_MAX_BOT_CHAIN_DEPTH,
+    cooldownMs: DEFAULT_BOT_CHAIN_COOLDOWN_MS,
+  },
+): boolean {
   if (!enabled) {
     return false;
   }
-  if (isCoolingDown(channelId, now)) {
+
+  const chain = getChain(channelId);
+  if (chain.cooldownUntil > now) {
     return false;
   }
-  return getChain(channelId).depth < MAX_BOT_CHAIN_DEPTH;
+
+  // The cooldown has elapsed: the next exchange starts a fresh chain.
+  if (chain.cooldownUntil > 0) {
+    chain.depth = 0;
+    chain.cooldownUntil = 0;
+  }
+
+  return chain.depth < limits.maxDepth;
 }
 
 /** Records a peer bot's line as part of the current chain. */
@@ -78,15 +133,23 @@ export function recordPeerMessage(channelId: string, authorName: string, content
 }
 
 /** Records Keqing's reply, deepening the chain and starting the cooldown at the limit. */
-export function recordKeqingReply(channelId: string, content: string, now: number): void {
+export function recordKeqingReply(
+  channelId: string,
+  content: string,
+  now: number,
+  limits: BotTalkLimits = {
+    maxDepth: DEFAULT_MAX_BOT_CHAIN_DEPTH,
+    cooldownMs: DEFAULT_BOT_CHAIN_COOLDOWN_MS,
+  },
+): void {
   const chain = getChain(channelId);
   chain.depth += 1;
   chain.context.push(`Keqing: ${content}`);
   if (chain.context.length > MAX_CHAIN_CONTEXT_MESSAGES) {
     chain.context.shift();
   }
-  if (chain.depth >= MAX_BOT_CHAIN_DEPTH) {
-    chain.cooldownUntil = now + BOT_CHAIN_COOLDOWN_MS;
+  if (chain.depth >= limits.maxDepth) {
+    chain.cooldownUntil = now + limits.cooldownMs;
   }
 }
 
@@ -103,7 +166,7 @@ export function resetChain(channelId: string, now: number, options: { cooldown?:
   const chain = getChain(channelId);
   chain.depth = 0;
   chain.context = [];
-  chain.cooldownUntil = options.cooldown ? now + BOT_CHAIN_COOLDOWN_MS : 0;
+  chain.cooldownUntil = options.cooldown ? now + DEFAULT_BOT_CHAIN_COOLDOWN_MS : 0;
 }
 
 /** Clears all channel state. Used by tests. */

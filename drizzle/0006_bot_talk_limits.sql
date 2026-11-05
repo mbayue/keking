@@ -1,0 +1,2 @@
+ALTER TABLE "bot_guilds" ADD COLUMN "bot_talk_max_depth" integer DEFAULT 20 NOT NULL;--> statement-breakpoint
+ALTER TABLE "bot_guilds" ADD COLUMN "bot_talk_cooldown_seconds" integer DEFAULT 60 NOT NULL;

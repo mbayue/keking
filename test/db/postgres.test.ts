@@ -11,6 +11,7 @@ import {
   deleteAllAiChatMemory,
   deleteGuild,
   getAiChatMemory,
+  getBotTalkLimits,
   getGuildCommandHash,
   getGuildRecord,
   getPreviewReply,
@@ -27,6 +28,7 @@ import {
   savePreviewReply,
   setAiEnabled,
   setBotTalkEnabled,
+  setBotTalkLimits,
   setGuildCommandHash,
   setSocialPreviewChannel,
   setSocialPreviewDomain,
@@ -137,6 +139,12 @@ describeDb("postgres storage", () => {
     expect(await isBotTalkEnabled(guildId)).toBe(true);
     await setBotTalkEnabled(guildId, false);
     expect(await isBotTalkEnabled(guildId)).toBe(false);
+
+    expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 20, cooldownSeconds: 60 });
+    await setBotTalkLimits(guildId, { maxDepth: 35, cooldownSeconds: 90 });
+    expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 35, cooldownSeconds: 90 });
+    await setBotTalkLimits(guildId, { maxDepth: 20 });
+    expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 20, cooldownSeconds: 90 });
 
     await setSocialPreviewEnabled(guildId, false, "user");
     expect(await isSocialPreviewEnabled(guildId)).toBe(false);

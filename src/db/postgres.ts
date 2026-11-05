@@ -122,6 +122,36 @@ export async function setBotTalkEnabled(guildId: string, enabled: boolean): Prom
     .set({ bot_talk_enabled: enabled, updated_at: new Date() })
     .where(eq(botGuilds.guild_id, guildId));
 }
+export async function getBotTalkLimits(guildId: string): Promise<{
+  maxDepth: number;
+  cooldownSeconds: number;
+}> {
+  const rows = await db
+    .select({
+      max_depth: botGuilds.bot_talk_max_depth,
+      cooldown_seconds: botGuilds.bot_talk_cooldown_seconds,
+    })
+    .from(botGuilds)
+    .where(eq(botGuilds.guild_id, guildId))
+    .limit(1);
+  return {
+    maxDepth: rows[0]?.max_depth ?? 20,
+    cooldownSeconds: rows[0]?.cooldown_seconds ?? 60,
+  };
+}
+export async function setBotTalkLimits(
+  guildId: string,
+  limits: { maxDepth?: number; cooldownSeconds?: number },
+): Promise<void> {
+  const patch: Partial<typeof botGuilds.$inferInsert> = { updated_at: new Date() };
+  if (limits.maxDepth !== undefined) {
+    patch.bot_talk_max_depth = limits.maxDepth;
+  }
+  if (limits.cooldownSeconds !== undefined) {
+    patch.bot_talk_cooldown_seconds = limits.cooldownSeconds;
+  }
+  await db.update(botGuilds).set(patch).where(eq(botGuilds.guild_id, guildId));
+}
 export async function isSocialPreviewEnabled(guildId: string): Promise<boolean> {
   const rows = await db
     .select({ social_preview_enabled: botGuilds.social_preview_enabled })

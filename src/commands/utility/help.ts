@@ -23,7 +23,7 @@ export const command: SlashCommand = {
         },
         { name: "AI", value: "Mention Keking or reply to one of its messages to chat with Keqing. Ask casually for a channel recap with “summarize this conversation” or “ringkas percakapan ini”. If Keking is in voice, it speaks the reply aloud." },
         { name: "Integrations", value: "`/pia`" },
-        { name: "Admin", value: "`/ai`, `/bot-talk`, `/botstats`, `/guildinfo`, `/social-preview`" },
+        { name: "Admin", value: "`/ai`, `/bottalk`, `/botstats`, `/guildinfo`, `/social-preview`" },
       ],
     });
 

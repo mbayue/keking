@@ -6,7 +6,7 @@ import { config } from "../src/config.js";
 const EXPECTED_COMMANDS = [
   "ai",
   "botstats",
-  "bot-talk",
+  "bottalk",
   "forget",
   "guildinfo",
   "help",

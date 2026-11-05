@@ -121,18 +121,25 @@ Music playback commands (`/play`, `/search`, `/queue`, `/now`, `/pause`, `/resum
 ### Admin
 
 - `/ai` - enable or disable AI chat for this server (Manage Server or bot owner)
-- `/bot-talk` - enable or disable bot-to-bot conversation for this server (Manage Server or bot owner)
+- `/bottalk` - configure bot-to-bot conversation for this server: enable it, set the reply limit, and set the cooldown (Manage Server or bot owner)
 - `/botstats` - show uptime, memory, ping, and voice dependency health
 - `/guildinfo` - show guild and deployment info
 - `/social-preview` - toggle link previews for the server, one domain, or one channel (Manage Server)
 
 ## Bot-to-Bot Conversation
 
-Keking can hold a short exchange with another bot in the same channel. It is **off by default** and enabled per server with `/bot-talk enabled`.
+Keking can hold a short exchange with another bot in the same channel. It is **off by default** and configured per server with `/bottalk`.
+
+```text
+/bottalk enabled:true|false
+/bottalk limit:<1-100>        replies allowed per exchange (default 20)
+/bottalk cooldown:<10-3600>   seconds to pause after the limit (default 60)
+```
 
 Guards, all enforced in `src/ai/keqing/bot-talk.ts`:
 
-- A chain is capped at **3** Keqing replies. Reaching the cap starts a **5 minute** cooldown during which peer bots are ignored in that channel.
+- A chain is capped at the configured number of Keqing replies (default **20**). Reaching the cap starts the cooldown (default **60 seconds**) during which peer bots are ignored in that channel.
+- Once the cooldown passes the chain resets, so the bots can resume rather than staying blocked.
 - A **human speaking breaks the chain**. Keqing replies to a bot again only after a person has spoken.
 - Saying "stop", "berhenti", or "cukup" while the bots are talking makes Keqing acknowledge and stop, and starts the cooldown.
 - Peer exchanges are channel-scoped and never written to a user's AI memory. They also never trigger image generation or TTS.

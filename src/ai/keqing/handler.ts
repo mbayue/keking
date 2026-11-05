@@ -1,7 +1,7 @@
 import { AttachmentBuilder, type Message, type VoiceBasedChannel } from "discord.js";
 
 import { config } from "../../config.js";
-import { isAiEnabled, isBotTalkEnabled } from "../../db/postgres.js";
+import { getBotTalkLimits, isAiEnabled, isBotTalkEnabled } from "../../db/postgres.js";
 import { getPlayer } from "../../music/player.js";
 import {
   MAX_CHANNEL_MESSAGES,
@@ -9,7 +9,11 @@ import {
   wantsChannelContext,
 } from "./channel-context.js";
 import {
+  DEFAULT_MAX_BOT_CHAIN_DEPTH,
+  type BotTalkLimits,
   canReplyToPeer,
+  clampChainDepth,
+  clampCooldownSeconds,
   detectStopInstruction,
   getChainContext,
   recordKeqingReply,
@@ -288,8 +292,17 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
     return false;
   }
 
+  const limits = await getBotTalkLimits(message.guild.id).catch((error) => {
+    console.error("[ai] failed to read bot talk limits (failing closed):", error);
+    return { maxDepth: DEFAULT_MAX_BOT_CHAIN_DEPTH, cooldownSeconds: 60 };
+  });
+  const botTalkLimits: BotTalkLimits = {
+    maxDepth: clampChainDepth(limits.maxDepth),
+    cooldownMs: clampCooldownSeconds(limits.cooldownSeconds) * 1000,
+  };
+
   const now = Date.now();
-  if (!canReplyToPeer(message.channel.id, botTalkEnabled, now)) {
+  if (!canReplyToPeer(message.channel.id, botTalkEnabled, now, botTalkLimits)) {
     return false;
   }
 
@@ -325,7 +338,7 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
       isPeerBot: true,
     });
 
-    recordKeqingReply(message.channel.id, reply, now);
+    recordKeqingReply(message.channel.id, reply, now, botTalkLimits);
 
     await message.reply({
       content: reply,
