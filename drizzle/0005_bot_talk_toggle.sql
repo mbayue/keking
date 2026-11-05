@@ -1,0 +1,1 @@
+ALTER TABLE "bot_guilds" ADD COLUMN "bot_talk_enabled" boolean DEFAULT false NOT NULL;

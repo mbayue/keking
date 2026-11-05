@@ -108,6 +108,20 @@ export async function setAiEnabled(guildId: string, enabled: boolean): Promise<v
     .set({ ai_enabled: enabled, updated_at: new Date() })
     .where(eq(botGuilds.guild_id, guildId));
 }
+export async function isBotTalkEnabled(guildId: string): Promise<boolean> {
+  const rows = await db
+    .select({ bot_talk_enabled: botGuilds.bot_talk_enabled })
+    .from(botGuilds)
+    .where(eq(botGuilds.guild_id, guildId))
+    .limit(1);
+  return rows[0]?.bot_talk_enabled ?? false;
+}
+export async function setBotTalkEnabled(guildId: string, enabled: boolean): Promise<void> {
+  await db
+    .update(botGuilds)
+    .set({ bot_talk_enabled: enabled, updated_at: new Date() })
+    .where(eq(botGuilds.guild_id, guildId));
+}
 export async function isSocialPreviewEnabled(guildId: string): Promise<boolean> {
   const rows = await db
     .select({ social_preview_enabled: botGuilds.social_preview_enabled })

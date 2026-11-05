@@ -18,6 +18,7 @@ import {
   getSocialPreviewDomainState,
   initializeGuildStorage,
   isAiEnabled,
+  isBotTalkEnabled,
   isSocialPreviewAllowed,
   isSocialPreviewEnabled,
   pruneAiChatMemory,
@@ -25,6 +26,7 @@ import {
   saveAiChatMemory,
   savePreviewReply,
   setAiEnabled,
+  setBotTalkEnabled,
   setGuildCommandHash,
   setSocialPreviewChannel,
   setSocialPreviewDomain,
@@ -115,6 +117,7 @@ describeDb("postgres storage", () => {
     expect(await getGuildCommandHash(guildId)).toBeNull();
     expect(await isAiEnabled(guildId)).toBe(true);
     expect(await isSocialPreviewEnabled(guildId)).toBe(true);
+    expect(await isBotTalkEnabled(guildId)).toBe(false);
 
     await upsertGuild(guildId, "First");
     await upsertGuild(guildId, "Second");
@@ -129,6 +132,11 @@ describeDb("postgres storage", () => {
     expect(await isAiEnabled(guildId)).toBe(false);
     await setAiEnabled(guildId, true);
     expect(await isAiEnabled(guildId)).toBe(true);
+
+    await setBotTalkEnabled(guildId, true);
+    expect(await isBotTalkEnabled(guildId)).toBe(true);
+    await setBotTalkEnabled(guildId, false);
+    expect(await isBotTalkEnabled(guildId)).toBe(false);
 
     await setSocialPreviewEnabled(guildId, false, "user");
     expect(await isSocialPreviewEnabled(guildId)).toBe(false);

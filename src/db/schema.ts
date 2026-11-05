@@ -5,6 +5,7 @@ export const botGuilds = pgTable("bot_guilds", {
   guild_name: text("guild_name").notNull(),
   commands_hash: text("commands_hash"),
   ai_enabled: boolean("ai_enabled").default(true).notNull(),
+  bot_talk_enabled: boolean("bot_talk_enabled").default(false).notNull(),
   social_preview_enabled: boolean("social_preview_enabled").default(true).notNull(),
   social_preview_changed_by: text("social_preview_changed_by"),
   social_preview_changed_at: timestamp("social_preview_changed_at", { withTimezone: true }),

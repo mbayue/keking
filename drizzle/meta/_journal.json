@@ -36,6 +36,13 @@
       "when": 1793621142169,
       "tag": "0004_glorious_cerise",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793880902723,
+      "tag": "0005_bot_talk_toggle",
+      "breakpoints": true
     }
   ]
 }
