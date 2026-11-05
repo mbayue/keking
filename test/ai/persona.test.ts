@@ -30,9 +30,24 @@ describe("Keqing persona", () => {
     expect(KEQING_SYSTEM_PROMPT).toMatch(/what you are about to do/i);
   });
 
-  test("forbids a stock self-introduction and slang mimicry", () => {
+  test("forbids a stock self-introduction and vulgarity", () => {
     expect(KEQING_SYSTEM_PROMPT).toMatch(/stock self-introduction/i);
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/No slang or street speak/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/No vulgarity/i);
+  });
+
+  test("bans corporate Indonesian and identity announcements", () => {
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/ada yang perlu ditangani/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/Never announce that you are a bot/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/bukan tukang obrolan/i);
+  });
+
+  test("keeps replies in Indonesian when the user mixes English in", () => {
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/Translate their English/i);
+  });
+
+  test("bans reflective essays and motivational advice", () => {
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/reflective essay/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/The longer the user's message, the shorter/i);
   });
 
   test("pins the self-reference pronoun to aku", () => {
