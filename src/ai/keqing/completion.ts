@@ -42,6 +42,7 @@ export async function requestCompletion(
           messages,
           temperature: 0.7,
           max_tokens: config.aiMaxTokens,
+          reasoning_effort: config.aiReasoningEffort,
         }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });

@@ -199,11 +199,12 @@ Chat requires an OpenAI-compatible chat-completions endpoint. Model routing:
 - `AI_API_KEY` - API key; chat is disabled when unset
 - `AI_BASE_URL` - endpoint base, default `https://api.openai.com/v1`
 - `AI_MODEL` - primary chat model, default `minimax-m3.1-flash`
-- `AI_FALLBACK_MODEL` - fallback chat model, default `qwen3.8-flash-next`
-- `AI_PREMIUM_MODEL` - last-resort premium model, default `mimo-v2.6-flash`
+- `AI_FALLBACK_MODEL` - fallback chat model, default `mimo-v2.6-flash`
+- `AI_PREMIUM_MODEL` - last-resort premium model, default `deepseek-v4.1-flash-1017`
 - `AI_VISION_MODEL` - image-understanding model, default `qwen3.8-flash-next`
 - `AI_IMAGE_MODEL` - image-generation model, default `sdxl`
 - `AI_MAX_TOKENS` - reply token cap, default `1200` to accommodate reasoning models
+- `AI_REASONING_EFFORT` - reasoning budget sent to the provider, default `minimal`. Low effort keeps replies fast and stops the model from spending the whole token cap on reasoning before it writes anything.
 
 Conversation memory is persisted per user per server in PostgreSQL: the last 24 messages (12 exchanges), capped at 12,000 characters. It follows the user across channels and survives restarts. Use `/forget` to clear your own memory; Manage Server admins or the bot owner can clear another user’s memory or use `/forget all`. Rows older than `AI_MEMORY_RETENTION_DAYS` (default `30`) are pruned at startup and daily. Deleting the guild record also removes its AI memory.
 
@@ -259,11 +260,12 @@ Optional:
 - `AI_API_KEY` - OpenAI-compatible API key for Keqing chat
 - `AI_BASE_URL` - chat-completions base URL (default: `https://api.openai.com/v1`)
 - `AI_MODEL` - primary chat model (default: `minimax-m3.1-flash`)
-- `AI_FALLBACK_MODEL` - fallback chat model (default: `qwen3.8-flash-next`)
-- `AI_PREMIUM_MODEL` - premium fallback model (default: `mimo-v2.6-flash`)
+- `AI_FALLBACK_MODEL` - fallback chat model (default: `mimo-v2.6-flash`)
+- `AI_PREMIUM_MODEL` - premium fallback model (default: `deepseek-v4.1-flash-1017`)
 - `AI_VISION_MODEL` - model for image attachments (default: `qwen3.8-flash-next`)
 - `AI_IMAGE_MODEL` - model for explicit image generation (default: `sdxl`)
 - `AI_MAX_TOKENS` - maximum reply tokens (default: `1200`)
+- `AI_REASONING_EFFORT` - provider reasoning budget (default: `minimal`)
 - `AI_MEMORY_RETENTION_DAYS` - delete AI memory older than this many days (default: `30`)
 - `ELEVENLABS_ENABLED` - set to `true` to use ElevenLabs TTS (default: `false`, Google Translate TTS)
 - `ELEVENLABS_API_KEY` - optional ElevenLabs API key
@@ -285,11 +287,12 @@ MUSIC_ENABLED=false
 AI_API_KEY=your-openai-compatible-key
 AI_BASE_URL=https://api.openai.com/v1
 AI_MODEL=minimax-m3.1-flash
-AI_FALLBACK_MODEL=qwen3.8-flash-next
-AI_PREMIUM_MODEL=mimo-v2.6-flash
+AI_FALLBACK_MODEL=mimo-v2.6-flash
+AI_PREMIUM_MODEL=deepseek-v4.1-flash-1017
 AI_VISION_MODEL=qwen3.8-flash-next
 AI_IMAGE_MODEL=sdxl
 AI_MAX_TOKENS=1200
+AI_REASONING_EFFORT=minimal
 AI_MEMORY_RETENTION_DAYS=30
 ELEVENLABS_ENABLED=false
 ELEVENLABS_API_KEY=your-elevenlabs-key

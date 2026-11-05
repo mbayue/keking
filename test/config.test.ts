@@ -15,11 +15,12 @@ describe("config", () => {
     expect(config.clientId).toBe("client");
     expect(config.aiBaseUrl).toBe("https://api.openai.com/v1");
     expect(config.aiModel).toBe("minimax-m3.1-flash");
-    expect(config.aiFallbackModel).toBe("qwen3.8-flash-next");
-    expect(config.aiPremiumModel).toBe("mimo-v2.6-flash");
+    expect(config.aiFallbackModel).toBe("mimo-v2.6-flash");
+    expect(config.aiPremiumModel).toBe("deepseek-v4.1-flash-1017");
     expect(config.aiVisionModel).toBe("qwen3.8-flash-next");
     expect(config.aiImageModel).toBe("sdxl");
     expect(config.aiMaxTokens).toBe(1200);
+    expect(config.aiReasoningEffort).toBe("minimal");
     expect(config.aiMemoryRetentionDays).toBe(30);
     expect(config.healthEnabled).toBe(true);
     expect(config.healthHost).toBe("127.0.0.1");

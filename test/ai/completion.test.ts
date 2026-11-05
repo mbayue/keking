@@ -69,6 +69,18 @@ describe("requestCompletionWithFallback", () => {
 });
 
 describe("requestCompletion", () => {
+  test("sends the configured reasoning effort", async () => {
+    let captured: { reasoning_effort?: string } = {};
+    globalThis.fetch = (async (_input, init) => {
+      captured = JSON.parse(String(init?.body)) as { reasoning_effort?: string };
+      return jsonResponse({ choices: [{ message: { content: "ok" } }] });
+    }) as typeof fetch;
+
+    await requestCompletion(messages);
+
+    expect(captured.reasoning_effort).toBe("minimal");
+  });
+
   test("returns a trimmed string reply", async () => {
     globalThis.fetch = (async () => jsonResponse({
       choices: [{ message: { content: "  hello  " } }],
