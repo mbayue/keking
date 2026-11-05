@@ -14,12 +14,12 @@ describe("config", () => {
     expect(config.token).toBe("token");
     expect(config.clientId).toBe("client");
     expect(config.aiBaseUrl).toBe("https://api.openai.com/v1");
-    expect(config.aiModel).toBe("spur-qwen3-8b");
-    expect(config.aiFallbackModel).toBe("spur-qwen2.5-7b");
-    expect(config.aiPremiumModel).toBe("spur-glm-air");
-    expect(config.aiVisionModel).toBe("spur-gemma4");
+    expect(config.aiModel).toBe("minimax-m3.1-flash");
+    expect(config.aiFallbackModel).toBe("qwen3.8-flash-next");
+    expect(config.aiPremiumModel).toBe("mimo-v2.6-flash");
+    expect(config.aiVisionModel).toBe("qwen3.8-flash-next");
     expect(config.aiImageModel).toBe("sdxl");
-    expect(config.aiMaxTokens).toBe(220);
+    expect(config.aiMaxTokens).toBe(1200);
     expect(config.aiMemoryRetentionDays).toBe(30);
     expect(config.elevenLabsModelId).toBe("eleven_multilingual_v2");
     expect(config.botOwnerId).toBe("330320305606230016");
@@ -78,7 +78,7 @@ describe("config", () => {
       AI_MEMORY_RETENTION_DAYS: "not-a-number",
     });
 
-    expect(config.aiMaxTokens).toBe(220);
+    expect(config.aiMaxTokens).toBe(1200);
     expect(config.aiMemoryRetentionDays).toBe(30);
   });
 
