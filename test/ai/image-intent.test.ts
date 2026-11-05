@@ -69,6 +69,25 @@ describe("image intent", () => {
     ).toBe("a cat. Reference style: cute fluffy cat");
   });
 
+  test("translates common Indonesian subjects, colors, and places", () => {
+    expect(extractImagePrompt("buatkan gambar pedang elektro ungu")).toBe(
+      "sword electro purple",
+    );
+    expect(extractImagePrompt("gambar kucing biru di taman")).toBe(
+      "gambar cat blue in garden",
+    );
+    expect(extractImagePrompt("gambar kota di malam hari")).toBe(
+      "gambar city in malam hari",
+    );
+    expect(extractImagePrompt("gambar pedang di meja batu")).toBe(
+      "gambar sword in table stone",
+    );
+  });
+
+  test("keeps multi-word translations intact", () => {
+    expect(extractImagePrompt("gambar naga hitam")).toBe("gambar black dragon");
+  });
+
   test("falls back to the full text when extraction is empty", () => {
     expect(extractImagePrompt("make an image")).toBe("make an image");
   });

@@ -18,7 +18,7 @@ describe("config", () => {
     expect(config.aiFallbackModel).toBe("mimo-v2.6-flash");
     expect(config.aiPremiumModel).toBe("deepseek-v4.1-flash-1017");
     expect(config.aiVisionModel).toBe("qwen3.8-flash-next");
-    expect(config.aiImageModel).toBe("sdxl");
+    expect(config.aiImageModel).toBe("qwen-image-2.1");
     expect(config.aiMaxTokens).toBe(1200);
     expect(config.aiReasoningEffort).toBe("minimal");
     expect(config.aiMemoryRetentionDays).toBe(30);

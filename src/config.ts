@@ -50,7 +50,7 @@ export function loadConfig(env: Env = process.env) {
     aiFallbackModel: env.AI_FALLBACK_MODEL || 'mimo-v2.6-flash',
     aiPremiumModel: env.AI_PREMIUM_MODEL || 'deepseek-v4.1-flash-1017',
     aiVisionModel: env.AI_VISION_MODEL || 'qwen3.8-flash-next',
-    aiImageModel: env.AI_IMAGE_MODEL || 'sdxl',
+    aiImageModel: env.AI_IMAGE_MODEL || 'qwen-image-2.1',
     aiMaxTokens: getPositiveInt(env, "AI_MAX_TOKENS", 1200),
     aiReasoningEffort: env.AI_REASONING_EFFORT || "minimal",
     aiMemoryRetentionDays: getPositiveInt(env, "AI_MEMORY_RETENTION_DAYS", 30),

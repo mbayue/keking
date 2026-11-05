@@ -7,6 +7,20 @@ import {
 
 const MAX_PROMPT_CHARS = 1_000;
 
+/** Keeps generated images clean without needing to mention it in the user prompt. */
+const NEGATIVE_PROMPT = [
+  "blurry",
+  "low quality",
+  "watermark",
+  "signature",
+  "text",
+  "letters",
+  "extra fingers",
+  "deformed",
+  "ugly",
+  "jpeg artifacts",
+].join(", ");
+
 export type GeneratedImage = {
   buffer: Buffer;
   mimeType: string;
@@ -30,6 +44,7 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
     body: JSON.stringify({
       model,
       prompt: trimmed,
+      negative_prompt: NEGATIVE_PROMPT,
       n: 1,
       size: "1024x1024",
       response_format: "b64_json",

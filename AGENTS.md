@@ -6,13 +6,14 @@ Keking is a Discord bot built with Bun and TypeScript. It provides music playbac
 
 The bot is intentionally Bun-only: it uses top-level await, `bun:test`, `Bun.sleep`, and Bun's automatic `.env` loading. Do not introduce a Node/tsx runtime path.
 
-Current AI defaults:
+Current AI defaults (Vultr, OpenAI-compatible endpoint at `https://api.vultrinference.com/v1`):
 
-- Chat primary: `spur-qwen3-8b`
-- Fallback: `spur-qwen2.5-7b`
-- Premium/last fallback: `spur-glm-air`
-- Image input: `spur-gemma4`
-- Image generation: `sdxl`
+- Chat primary: `minimax-m3.1-flash`
+- Fallback: `mimo-v2.6-flash`
+- Premium/last fallback: `deepseek-v4.1-flash-1017`
+- Image input: `qwen3.8-flash-next`
+- Image generation: `qwen-image-2.1`
+- Reasoning effort: `minimal` (sent as `reasoning_effort`; keeps replies fast and stops reasoning from consuming the whole token budget)
 
 PostgreSQL is effectively mandatory: `src/db/postgres.ts` creates a pool at module load and throws when `DATABASE_URL` is missing.
 

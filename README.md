@@ -202,7 +202,7 @@ Chat requires an OpenAI-compatible chat-completions endpoint. Model routing:
 - `AI_FALLBACK_MODEL` - fallback chat model, default `mimo-v2.6-flash`
 - `AI_PREMIUM_MODEL` - last-resort premium model, default `deepseek-v4.1-flash-1017`
 - `AI_VISION_MODEL` - image-understanding model, default `qwen3.8-flash-next`
-- `AI_IMAGE_MODEL` - image-generation model, default `sdxl`
+- `AI_IMAGE_MODEL` - image-generation model, default `qwen-image-2.1`
 - `AI_MAX_TOKENS` - reply token cap, default `1200` to accommodate reasoning models
 - `AI_REASONING_EFFORT` - reasoning budget sent to the provider, default `minimal`. Low effort keeps replies fast and stops the model from spending the whole token cap on reasoning before it writes anything.
 
@@ -263,7 +263,7 @@ Optional:
 - `AI_FALLBACK_MODEL` - fallback chat model (default: `mimo-v2.6-flash`)
 - `AI_PREMIUM_MODEL` - premium fallback model (default: `deepseek-v4.1-flash-1017`)
 - `AI_VISION_MODEL` - model for image attachments (default: `qwen3.8-flash-next`)
-- `AI_IMAGE_MODEL` - model for explicit image generation (default: `sdxl`)
+- `AI_IMAGE_MODEL` - model for explicit image generation (default: `qwen-image-2.1`)
 - `AI_MAX_TOKENS` - maximum reply tokens (default: `1200`)
 - `AI_REASONING_EFFORT` - provider reasoning budget (default: `minimal`)
 - `AI_MEMORY_RETENTION_DAYS` - delete AI memory older than this many days (default: `30`)
@@ -290,7 +290,7 @@ AI_MODEL=minimax-m3.1-flash
 AI_FALLBACK_MODEL=mimo-v2.6-flash
 AI_PREMIUM_MODEL=deepseek-v4.1-flash-1017
 AI_VISION_MODEL=qwen3.8-flash-next
-AI_IMAGE_MODEL=sdxl
+AI_IMAGE_MODEL=qwen-image-2.1
 AI_MAX_TOKENS=1200
 AI_REASONING_EFFORT=minimal
 AI_MEMORY_RETENTION_DAYS=30

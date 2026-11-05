@@ -29,8 +29,9 @@ describe("generateImage", () => {
 
     expect(image.buffer.toString()).toBe("image-bytes");
     expect(image.mimeType).toBe("image/png");
-    expect(body?.model).toBe("sdxl");
+    expect(body?.model).toBe("qwen-image-2.1");
     expect(body?.prompt).toBe("a red apple");
+    expect(typeof body?.negative_prompt).toBe("string");
   });
 
   test("rejects empty prompts", async () => {
