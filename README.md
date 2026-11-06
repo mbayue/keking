@@ -180,6 +180,8 @@ Keking can roleplay Keqing, the Yuheng of the Liyue Qixing. It answers only when
 
 There is no `/chat` command.
 
+The persona lives in `src/ai/keqing/persona.ts` and follows a Soul document structure: `Basic Identity`, `Core Temperament`, `Outer Style`, `Language System`, `Action Logic`, `Hidden Traits`, and `Boundaries`. `Hidden Traits` describes what sits beneath the surface rather than adding more surface rules. It is kept in compact prose so the whole prompt stays near 1,600 tokens, because the prompt is sent on every request and its size dominates the per-request cost.
+
 When you reply to one of Keking's messages, the referenced message is included as quoted context for that request. It is capped, treated as untrusted data rather than instructions, and is not added to stored AI memory.
 
 You can also ask for a casual channel recap by mentioning Keking or replying to it, for example: “summarize this conversation”, “what happened in this channel?”, “ringkas percakapan ini”, or “catch me up”. Keking reads up to 50 recent messages for that request only; the history is sent to the AI provider and is not stored as memory. There is no `/summarize` command.

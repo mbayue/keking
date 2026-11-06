@@ -17,32 +17,56 @@ describe("Keqing persona", () => {
     expect(KEQING_RELATIONSHIP_CONTEXT).toContain("Relationship context");
   });
 
+  test("follows the Soul schema", () => {
+    expect(KEQING_SYSTEM_PROMPT.startsWith("# Soul")).toBe(true);
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Basic Identity");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Core Temperament");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Outer Style");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Language System");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Action Logic");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Hidden Traits");
+    expect(KEQING_SYSTEM_PROMPT).toContain("## Boundaries");
+  });
+
+  test("keeps the prompt compact", () => {
+    expect(KEQING_SYSTEM_PROMPT.length).toBeLessThan(6_500);
+  });
+
+  test("states hidden traits rather than only surface rules", () => {
+    const hidden = KEQING_SYSTEM_PROMPT.split("## Hidden Traits")[1] ?? "";
+    expect(hidden).toContain("composure hides real care");
+    expect(hidden).toContain("remembering what people told her");
+  });
+
   test("anchors the reply language to the conversation, not the last message", () => {
     expect(KEQING_SYSTEM_PROMPT).toContain("whole conversation");
     expect(KEQING_SYSTEM_PROMPT).not.toContain("mirror the language they use");
   });
 
   test("forbids echoing the user's words back as the answer", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/echo, or paraphrase/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/echoes or paraphrases/i);
   });
 
   test("forbids announcing what the bot was asked to do", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/what you are about to do/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/what it is about to do/i);
   });
 
-  test("forbids a stock self-introduction and vulgarity", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/stock self-introduction/i);
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/No vulgarity/i);
+  test("forbids talking about itself as a bot or a persona", () => {
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/talks about itself as a system/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/never analyze the criticism/i);
   });
 
-  test("bans corporate Indonesian and identity announcements", () => {
+  test("bans corporate Indonesian and markdown emphasis", () => {
     expect(KEQING_SYSTEM_PROMPT).toMatch(/ada yang perlu ditangani/i);
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/Never announce that you are a bot/i);
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/bukan tukang obrolan/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/markdown emphasis/i);
+  });
+
+  test("bans borrowed English jargon", () => {
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/English jargon/i);
   });
 
   test("keeps replies in Indonesian when the user mixes English in", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/Translate their English/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/translating rather than copying/i);
   });
 
   test("bans reflective essays and motivational advice", () => {
@@ -51,10 +75,10 @@ describe("Keqing persona", () => {
   });
 
   test("pins the self-reference pronoun to aku", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/Always "aku"/);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/never "kuring", "gw", or "saya"/i);
   });
 
   test("allows a one-line model identity answer without boasting", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/what model or version you run on/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/what model it runs on/i);
   });
 });

@@ -141,6 +141,7 @@ docker compose up -d db     # local Postgres on host port 5433
 - Client/event contracts: `src/types/client.ts`, `src/structures/`
 - Configuration: `src/config.ts`
 - AI: `src/ai/keqing/handler.ts`, `completion.ts`, `memory.ts`, `persona.ts`, `image-input.ts`, `image-generation.ts`, `image-intent.ts`, `reply-format.ts`
+- Persona: `src/ai/keqing/persona.ts` uses a Soul document structure (`Basic Identity`, `Core Temperament`, `Outer Style`, `Language System`, `Action Logic`, `Hidden Traits`, `Boundaries`) in compact prose. It is sent on every request, so its token count dominates per-request cost — keep it near 1,600 tokens and verify with a live quality sweep before changing rules.
 - Database: `src/db/postgres.ts`, `src/db/schema.ts`, `drizzle/`
 - Command deployment: `src/utils/deploy-commands.ts`
 - Loader: `src/utils/load-files.ts`, `src/loaders/commands.ts`
