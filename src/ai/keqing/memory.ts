@@ -4,7 +4,7 @@ import {
   type StoredChatTurn,
 } from "../../db/postgres.js";
 
-const MAX_HISTORY_MESSAGES = 24;
+const MAX_HISTORY_MESSAGES = 10;
 const MAX_HISTORY_CHARS = 12_000;
 
 type LoadMemory = (guildId: string, userId: string) => Promise<StoredChatTurn[]>;
@@ -16,7 +16,11 @@ export async function loadTurns(
   getMemory: LoadMemory = getAiChatMemory,
 ): Promise<StoredChatTurn[]> {
   try {
-    return await getMemory(guildId, userId);
+    const turns = await getMemory(guildId, userId);
+    // Trim on load so a row stored under an older, larger window is not sent
+    // to the model in full before it gets trimmed on save.
+    trimTurns(turns);
+    return turns;
   } catch (error) {
     console.error("[ai] failed to load persistent memory:", error);
     return [];

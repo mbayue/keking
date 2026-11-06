@@ -45,11 +45,11 @@
 
       <h3>3. Data We Store</h3>
       <p>If you enable the database, Keking stores basic server info: server ID, command settings, and link-preview preferences.</p>
-      <p>If AI chat is enabled, Keking stores the last 24 messages (12 exchanges) per user per server in PostgreSQL so it can continue conversations. AI memory older than 30 days is deleted automatically. Use <code>/forget</code> to delete your stored AI memory; deleting your server’s record also removes it.</p>
+      <p>If AI chat is enabled, Keking stores the last 10 messages (5 exchanges) per user per server in PostgreSQL so it can continue conversations. AI memory older than 30 days is deleted automatically. Use <code>/forget</code> to delete your stored AI memory; deleting your server’s record also removes it.</p>
       <p>Keking does not store social-preview message text or user profiles.</p>
 
       <h3>4. Message Content</h3>
-      <p>Keking scans messages in real time to fix bad social media links. We do not save this text. We do not use it to build profiles. When you trigger AI chat, the message and the recent conversation context are sent to the configured AI provider; the last 24 messages are stored in PostgreSQL for continuity. If you reply to a message, that referenced message is included as quoted context for that request only and is not stored as AI memory. If you explicitly ask for a channel recap (for example, “summarize this conversation”), up to 50 recent messages are sent to the AI provider for that request only and are not stored as AI memory.</p>
+      <p>Keking scans messages in real time to fix bad social media links. We do not save this text. We do not use it to build profiles. When you trigger AI chat, the message and the recent conversation context are sent to the configured AI provider; the last 10 messages are stored in PostgreSQL for continuity. If you reply to a message, that referenced message is included as quoted context for that request only and is not stored as AI memory. If you explicitly ask for a channel recap (for example, “summarize this conversation”), up to 50 recent messages are sent to the AI provider for that request only and are not stored as AI memory.</p>
 
       <h3>5. AI Training</h3>
       <p>We do not train AI models on your messages or data. The configured AI provider's own privacy and retention policies apply to requests sent to it.</p>

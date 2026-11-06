@@ -36,13 +36,24 @@ describe("AI memory", () => {
     ).resolves.toBeUndefined();
   });
 
-  test("trims to 24 turns", () => {
+  test("trims to 10 turns", () => {
     const turns = Array.from({ length: 30 }, (_, index) => ({
       role: index % 2 === 0 ? ("user" as const) : ("assistant" as const),
       content: String(index),
     }));
     trimTurns(turns);
-    expect(turns).toHaveLength(24);
+    expect(turns).toHaveLength(10);
+  });
+
+  test("trims a stored window that predates the current limit", async () => {
+    const stored = Array.from({ length: 24 }, (_, index) => ({
+      role: index % 2 === 0 ? ("user" as const) : ("assistant" as const),
+      content: String(index),
+    }));
+
+    const result = await loadTurns("guild", "user", async () => stored);
+
+    expect(result).toHaveLength(10);
   });
 
   test("drops leading assistant turns", () => {

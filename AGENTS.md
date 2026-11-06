@@ -55,7 +55,7 @@ Startup aborts before login if the database cannot connect. Migrations run from 
 
 - Requires a guild message from a non-bot author, a bot mention or a reply to a bot message, an AI key, and the guild AI toggle.
 - AI toggle read failures fail closed.
-- Loads per-guild/per-user memory (last 24 turns, 12,000-character cap).
+- Loads per-guild/per-user memory (last 10 turns, 12,000-character cap). Turns are trimmed on load as well as on save, so a row stored under an older window is never sent to the model in full.
 - Builds prompt context from Discord author/server mentions, quoted reply text, and optional channel recap.
 - Routes image requests to `AI_VISION_MODEL`; routes text through `AI_MODEL`, `AI_FALLBACK_MODEL`, then `AI_PREMIUM_MODEL`.
 - Explicit image-generation requests use `AI_IMAGE_MODEL` and return a Discord attachment.

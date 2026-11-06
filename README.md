@@ -212,7 +212,7 @@ Chat requires an OpenAI-compatible chat-completions endpoint. Model routing:
 - `AI_MAX_TOKENS` - reply token cap, default `1200` to accommodate reasoning models
 - `AI_REASONING_EFFORT` - reasoning budget sent to the provider, default `minimal`. Low effort keeps replies fast and stops the model from spending the whole token cap on reasoning before it writes anything.
 
-Conversation memory is persisted per user per server in PostgreSQL: the last 24 messages (12 exchanges), capped at 12,000 characters. It follows the user across channels and survives restarts. Use `/forget` to clear your own memory; Manage Server admins or the bot owner can clear another user’s memory or use `/forget all`. Rows older than `AI_MEMORY_RETENTION_DAYS` (default `30`) are pruned at startup and daily. Deleting the guild record also removes its AI memory.
+Conversation memory is persisted per user per server in PostgreSQL: the last 10 messages (5 exchanges), capped at 12,000 characters. It follows the user across channels and survives restarts. Use `/forget` to clear your own memory; Manage Server admins or the bot owner can clear another user’s memory or use `/forget all`. Rows older than `AI_MEMORY_RETENTION_DAYS` (default `30`) are pruned at startup and daily. Deleting the guild record also removes its AI memory.
 
 This is a fan roleplay and is not affiliated with HoYoverse.
 
@@ -404,7 +404,7 @@ When `DATABASE_URL` is configured, the bot stores limited guild-level operationa
 - guild ID
 - guild name
 - command deployment hash
-- AI chat memory (last 24 messages per user per server)
+- AI chat memory (last 10 messages per user per server)
 - social-preview settings
 - join timestamp
 - update timestamp
