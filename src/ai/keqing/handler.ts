@@ -71,6 +71,37 @@ export function isAiConfigured(): boolean {
   return config.aiApiKey.trim().length > 0;
 }
 
+/**
+ * Removes a mention of the given user id from the text.
+ *
+ * A reply already points at the person it answers, so re-tagging them is noise.
+ * The bot adds mentions itself when it wants to address someone else.
+ */
+export function stripMention(text: string, userId: string): string {
+  return text
+    .replaceAll(`<@${userId}>`, "")
+    .replaceAll(`<@!${userId}>`, "")
+    .replace(/^\s+|\s+$/g, "");
+}
+
+const MENTION_PATTERN = /<@!?(\d+)>/g;
+
+/**
+ * Keeps only the mentions of the given user ids and removes the rest.
+ *
+ * Mentions are a request-driven thing: the bot tags someone only when the
+ * human asked it to address them. Anything the model tags on its own is
+ * dropped, so it cannot ping a user who did not ask to be pinged.
+ */
+export function keepMentions(text: string, allowedIds: readonly string[]): string {
+  const allowed = new Set(allowedIds);
+  return text
+    .replace(MENTION_PATTERN, (match, id: string) => (allowed.has(id) ? match : ""))
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/^[\s,.:;-]+/, "")
+    .trim();
+}
+
 export async function generateKeqingReply(input: KeqingChatInput): Promise<string> {
   if (!isAiConfigured()) {
     throw new Error("AI chat is not configured. Set AI_API_KEY in the environment.");
@@ -239,14 +270,17 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
       : referenced
         ? await buildImageParts(referenced)
         : [];
-    const mentionedUsers = [...message.mentions.users.values()]
+    const mentionedUserList = [...message.mentions.users.values()]
       .filter((user) => user.id !== botId)
-      .slice(0, 10)
-      .map((user) => {
-        const member = message.mentions.members?.get(user.id);
-        const displayName = cleanName(member?.displayName ?? user.globalName ?? user.username);
-        return `${displayName} (@${cleanName(user.username)}, ID ${user.id})${user.bot ? " [bot]" : ""}`;
-      });
+      .slice(0, 10);
+    // Only these users may be tagged back. A mention is something the human
+    // asked for, never something the model decides to add on its own.
+    const mentionableIds = mentionedUserList.map((user) => user.id);
+    const mentionedUsers = mentionedUserList.map((user) => {
+      const member = message.mentions.members?.get(user.id);
+      const displayName = cleanName(member?.displayName ?? user.globalName ?? user.username);
+      return `${displayName} (@${cleanName(user.username)}, ID ${user.id})${user.bot ? " [bot]" : ""}`;
+    });
     const authorName = cleanName(message.member?.displayName ?? message.author.username);
     const authorUsername = cleanName(message.author.username);
     const mentionedContext = mentionedUsers.length > 0
@@ -269,8 +303,11 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
     });
 
     const voiceChannel = await getBotVoiceChannel(message);
+    // The reply already points at the author, so a self-mention is redundant.
+    // Mentions of other people are kept only when the human asked for them.
+    const finalReply = keepMentions(stripMention(reply, message.author.id), mentionableIds);
     await message.reply({
-      content: reply,
+      content: finalReply,
       allowedMentions: ALLOWED_MENTIONS,
     });
 
@@ -359,12 +396,12 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
 
     recordKeqingReply(message.channel.id, reply, now, botTalkLimits);
 
-    // Reply to the peer bot with a real mention so it knows it was addressed.
-    // The mention is rendered from the ID, not from model output, so the model
-    // cannot invent or drop it.
-    const peerMention = `<@${message.author.id}>`;
+    // No mention on the follow-up. The peer was already tagged in the reply
+    // that asked for this exchange, and the reply relationship carries the
+    // conversation from here. Mentioning again would ping it for every turn.
+    const withoutModelMentions = keepMentions(stripMention(reply, message.author.id), []);
     await message.reply({
-      content: `${peerMention} ${reply}`,
+      content: withoutModelMentions,
       allowedMentions: ALLOWED_MENTIONS,
     });
   } catch (error) {

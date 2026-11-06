@@ -148,7 +148,7 @@ Keqing is told to add something new rather than restate the other bot, and to le
 
 Keking only answers a peer bot that addressed it — by mention, or by replying to one of Keking's messages. It ignores unrelated bots in the channel.
 
-Replies may mention individual users so the person being addressed actually gets pinged. Roles are never pinged, and `@everyone` / `@here` are never used.
+Replies may mention individual users so the person being addressed actually gets pinged, but only when the human asked for it — "@keking sapa @iris" gets a mention, a plain question does not. Roles are never pinged, and `@everyone` / `@here` are never used. When a reply only answers someone, it carries no mention: the reply itself already points at them.
 
 ## Social Preview Behavior
 

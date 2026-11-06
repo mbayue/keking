@@ -29,7 +29,9 @@ describe("Keqing persona", () => {
   });
 
   test("keeps the prompt compact", () => {
-    expect(KEQING_SYSTEM_PROMPT.length).toBeLessThan(6_600);
+    // The mention rules cost ~200 chars. The prompt was 6364 before them and
+    // stays well under the original 7633, so it is still a net reduction.
+    expect(KEQING_SYSTEM_PROMPT.length).toBeLessThan(6_700);
   });
 
   test("states hidden traits rather than only surface rules", () => {
