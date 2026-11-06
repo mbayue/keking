@@ -142,6 +142,7 @@ docker compose up -d db     # local Postgres on host port 5433
 - Configuration: `src/config.ts`
 - AI: `src/ai/keqing/handler.ts`, `completion.ts`, `memory.ts`, `persona.ts`, `image-input.ts`, `image-generation.ts`, `image-intent.ts`, `reply-format.ts`
 - Persona: `src/ai/keqing/persona.ts` uses a Soul document structure (`Basic Identity`, `Core Temperament`, `Outer Style`, `Language System`, `Action Logic`, `Hidden Traits`, `Boundaries`) in compact prose. It is sent on every request, so its token count dominates per-request cost — keep it near 1,600 tokens and verify with a live quality sweep before changing rules.
+- Mentions: request-driven only. `src/ai/keqing/mention-intent.ts` detects an explicit ask to address someone; `keepMentions` in `handler.ts` drops any mention the model invented, and the code guarantees the mention exists when it was requested. Never let the model decide who gets pinged.
 - Database: `src/db/postgres.ts`, `src/db/schema.ts`, `drizzle/`
 - Command deployment: `src/utils/deploy-commands.ts`
 - Loader: `src/utils/load-files.ts`, `src/loaders/commands.ts`

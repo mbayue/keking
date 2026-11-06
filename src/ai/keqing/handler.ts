@@ -29,6 +29,7 @@ import {
 import { generateImage } from "./image-generation.js";
 import { buildImageParts } from "./image-input.js";
 import { buildImagePrompt, isImageGenerationRequest } from "./image-intent.js";
+import { wantsMention } from "./mention-intent.js";
 import { loadTurns, saveTurns, trimTurns } from "./memory.js";
 import { stripEmojis, stripReasoning } from "./reply-format.js";
 import { buildReplyContext } from "./reply-context.js";
@@ -303,11 +304,18 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
     });
 
     const voiceChannel = await getBotVoiceChannel(message);
-    // The reply already points at the author, so a self-mention is redundant.
-    // Mentions of other people are kept only when the human asked for them.
-    const finalReply = keepMentions(stripMention(reply, message.author.id), mentionableIds);
+    // A mention is request-driven. Unless the human asked Keking to address
+    // someone, no mention survives: the reply already points at the author.
+    const shouldAddress = wantsMention(content) && mentionableIds.length > 0;
+    const allowedMentionIds = shouldAddress ? mentionableIds : [];
+    const finalReply = keepMentions(stripMention(reply, message.author.id), allowedMentionIds);
+    // The model is unreliable about writing a mention, so guarantee it here.
+    const requestedMention =
+      shouldAddress && !finalReply.includes(`<@${mentionableIds[0]}>`)
+        ? `<@${mentionableIds[0]}> `
+        : "";
     await message.reply({
-      content: finalReply,
+      content: `${requestedMention}${finalReply}`,
       allowedMentions: ALLOWED_MENTIONS,
     });
 
