@@ -5,6 +5,8 @@ node_modules/
 dist/
 *.tsbuildinfo
 *.d.ts
+# The load-files test needs a real .d.ts file to prove the skip path works.
+!test/fixtures/load-files/*.d.ts
 *.js.map
 
 # Environment variables

@@ -176,6 +176,7 @@ docker compose up -d db     # local Postgres on host port 5433
 - Coverage gate: `bunfig.toml` requires **100% lines and functions**. There is no branch threshold.
 - Coverage exclusions are deliberate adapter/bootstrap files: commands, events, loaders, player/events, social cards/handlers, TTS extractor, AI handler/index, Discord permissions/deploy utilities, and type-only structures. The observability modules are covered and must stay at 100%.
 - Bun reports only modules loaded by tests. A new unimported module is absent from the report; once imported, it must reach 100%.
+- Coverage fixtures must be committed, not just present locally. `test/fixtures/load-files/ignored.d.ts` is gitignored by the `*.d.ts` rule and needs the explicit negation in `.gitignore`; without it the `.d.ts` skip branch in `src/utils/load-files.ts` is never executed and the 100% gate fails in CI while passing locally.
 - The PostgreSQL integration test is mandatory for the gate. It requires `DATABASE_URL`, runs migrations, uses a unique guild/message ID, creates a raw `pg` pool for timestamp manipulation, and closes both pools in `afterAll`.
 - Start the compose database before local coverage:
   ```bash
