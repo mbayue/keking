@@ -185,6 +185,6 @@ describe("bot talk guards", () => {
     expect(clampCooldownSeconds(0)).toBe(10);
     expect(clampCooldownSeconds(99999)).toBe(3600);
     expect(clampCooldownSeconds(30)).toBe(30);
-    expect(clampCooldownSeconds(Number.NaN)).toBe(60);
+    expect(clampCooldownSeconds(Number.NaN)).toBe(300);
   });
 });

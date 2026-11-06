@@ -140,7 +140,7 @@ describeDb("postgres storage", () => {
     await setBotTalkEnabled(guildId, false);
     expect(await isBotTalkEnabled(guildId)).toBe(false);
 
-    expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 20, cooldownSeconds: 60 });
+    expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 20, cooldownSeconds: 300 });
     await setBotTalkLimits(guildId, { maxDepth: 35, cooldownSeconds: 90 });
     expect(await getBotTalkLimits(guildId)).toEqual({ maxDepth: 35, cooldownSeconds: 90 });
     await setBotTalkLimits(guildId, { maxDepth: 20 });

@@ -7,7 +7,7 @@ export const botGuilds = pgTable("bot_guilds", {
   ai_enabled: boolean("ai_enabled").default(true).notNull(),
   bot_talk_enabled: boolean("bot_talk_enabled").default(false).notNull(),
   bot_talk_max_depth: integer("bot_talk_max_depth").default(20).notNull(),
-  bot_talk_cooldown_seconds: integer("bot_talk_cooldown_seconds").default(60).notNull(),
+  bot_talk_cooldown_seconds: integer("bot_talk_cooldown_seconds").default(300).notNull(),
   social_preview_enabled: boolean("social_preview_enabled").default(true).notNull(),
   social_preview_changed_by: text("social_preview_changed_by"),
   social_preview_changed_at: timestamp("social_preview_changed_at", { withTimezone: true }),

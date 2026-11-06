@@ -9,6 +9,7 @@ import {
   wantsChannelContext,
 } from "./channel-context.js";
 import {
+  DEFAULT_BOT_CHAIN_COOLDOWN_MS,
   DEFAULT_MAX_BOT_CHAIN_DEPTH,
   type BotTalkLimits,
   canReplyToPeer,
@@ -358,7 +359,10 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
 
   const limits = await getBotTalkLimits(message.guild.id).catch((error) => {
     console.error("[ai] failed to read bot talk limits (failing closed):", error);
-    return { maxDepth: DEFAULT_MAX_BOT_CHAIN_DEPTH, cooldownSeconds: 60 };
+    return {
+      maxDepth: DEFAULT_MAX_BOT_CHAIN_DEPTH,
+      cooldownSeconds: Math.round(DEFAULT_BOT_CHAIN_COOLDOWN_MS / 1000),
+    };
   });
   const botTalkLimits: BotTalkLimits = {
     maxDepth: clampChainDepth(limits.maxDepth),

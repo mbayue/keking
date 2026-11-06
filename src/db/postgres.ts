@@ -136,7 +136,7 @@ export async function getBotTalkLimits(guildId: string): Promise<{
     .limit(1);
   return {
     maxDepth: rows[0]?.max_depth ?? 20,
-    cooldownSeconds: rows[0]?.cooldown_seconds ?? 60,
+    cooldownSeconds: rows[0]?.cooldown_seconds ?? 300,
   };
 }
 export async function setBotTalkLimits(

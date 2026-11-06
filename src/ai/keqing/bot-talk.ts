@@ -10,7 +10,7 @@
 export const DEFAULT_MAX_BOT_CHAIN_DEPTH = 20;
 
 /** Default cooldown after a chain hits its depth limit. */
-export const DEFAULT_BOT_CHAIN_COOLDOWN_MS = 60 * 1000;
+export const DEFAULT_BOT_CHAIN_COOLDOWN_MS = 5 * 60 * 1000;
 
 /** Bounds accepted for the per-server chain depth. */
 export const MIN_BOT_CHAIN_DEPTH = 1;

@@ -50,6 +50,13 @@
       "when": 1793881325218,
       "tag": "0006_bot_talk_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793936665950,
+      "tag": "0007_bot_talk_cooldown_5min",
+      "breakpoints": true
     }
   ]
 }

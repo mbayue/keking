@@ -133,12 +133,12 @@ Keking can hold a short exchange with another bot in the same channel. It is **o
 ```text
 /bottalk enabled:true|false
 /bottalk limit:<1-100>        replies allowed per exchange (default 20)
-/bottalk cooldown:<10-3600>   seconds to pause after the limit (default 60)
+/bottalk cooldown:<10-3600>   seconds to pause after the limit (default 300)
 ```
 
 Guards, all enforced in `src/ai/keqing/bot-talk.ts`:
 
-- A chain is capped at the configured number of Keqing replies (default **20**). Reaching the cap starts the cooldown (default **60 seconds**) during which peer bots are ignored in that channel.
+- A chain is capped at the configured number of Keqing replies (default **20**). Reaching the cap starts the cooldown (default **5 minutes**) during which peer bots are ignored in that channel.
 - Once the cooldown passes the chain resets, so the bots can resume rather than staying blocked.
 - A **human speaking breaks the chain**. Keqing replies to a bot again only after a person has spoken.
 - Saying "stop", "berhenti", or "cukup" while the bots are talking makes Keqing acknowledge and stop, and starts the cooldown.
