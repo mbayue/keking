@@ -144,7 +144,11 @@ Guards, all enforced in `src/ai/keqing/bot-talk.ts`:
 - Saying "stop", "berhenti", or "cukup" while the bots are talking makes Keqing acknowledge and stop, and starts the cooldown.
 - Peer exchanges are channel-scoped and never written to a user's AI memory. They also never trigger image generation or TTS.
 
-Keqing is told to add something new rather than restate the other bot, and to let the exchange end after one or two sentences.
+Keqing is told to add something new rather than restate the other bot, and to let the exchange end after one or two sentences. It replies with a real mention of the peer bot so the peer knows it was addressed.
+
+Keking only answers a peer bot that addressed it — by mention, or by replying to one of Keking's messages. It ignores unrelated bots in the channel.
+
+Replies may mention individual users so the person being addressed actually gets pinged. Roles are never pinged, and `@everyone` / `@here` are never used.
 
 ## Social Preview Behavior
 

@@ -1,4 +1,4 @@
-import { AttachmentBuilder, type Message, type VoiceBasedChannel } from "discord.js";
+import { AttachmentBuilder, type Message, type MessageMentionOptions, type VoiceBasedChannel } from "discord.js";
 
 import { config } from "../../config.js";
 import { getBotTalkLimits, isAiEnabled, isBotTalkEnabled } from "../../db/postgres.js";
@@ -42,6 +42,15 @@ import {
 
 const MAX_USER_INPUT_CHARS = 2_000;
 const MAX_TTS_CHARS = 1_200;
+
+/**
+ * Ping the users the reply is about, but never @everyone or @here.
+ * Roles are deliberately excluded: a role ping can notify a whole server.
+ */
+const ALLOWED_MENTIONS: MessageMentionOptions = {
+  parse: ["users"],
+  repliedUser: false,
+};
 
 export type KeqingChatInput = {
   conversationKey: string;
@@ -241,7 +250,7 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
     const authorName = cleanName(message.member?.displayName ?? message.author.username);
     const authorUsername = cleanName(message.author.username);
     const mentionedContext = mentionedUsers.length > 0
-      ? `; mentioned users: ${mentionedUsers.join("; ")}`
+      ? `; people mentioned in this message: ${mentionedUsers.join("; ")}`
       : "";
     const discordContext = `user "${authorName}" (@${authorUsername}, ID ${message.author.id}) in server "${cleanName(message.guild.name)}"${mentionedContext}`;
     const channelContext = wantsChannelContext(content)
@@ -262,7 +271,7 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
     const voiceChannel = await getBotVoiceChannel(message);
     await message.reply({
       content: reply,
-      allowedMentions: { parse: [], repliedUser: false },
+      allowedMentions: ALLOWED_MENTIONS,
     });
 
     await speakKeqingReply(message, reply, voiceChannel);
@@ -281,6 +290,16 @@ export async function handleKeqingChat(message: Message): Promise<boolean> {
 
 async function handlePeerBotMessage(message: Message<true>, botId: string): Promise<boolean> {
   if (message.author.id === botId) {
+    return false;
+  }
+
+  // Only answer a peer bot that actually addressed Keking, either by mention or
+  // by replying to one of Keking's messages. Otherwise every unrelated bot in
+  // the channel would start a conversation.
+  const addressedKeking = message.mentions.has(botId, { ignoreEveryone: true });
+  const referenced = await getReferencedMessage(message);
+  const repliedToKeking = addressedKeking ? false : referenced?.author.id === botId;
+  if (!addressedKeking && !repliedToKeking) {
     return false;
   }
 
@@ -311,7 +330,7 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
   }
 
   const peerName = cleanName(message.author.username);
-  const peerContent = message.content.trim().slice(0, MAX_USER_INPUT_CHARS);
+  const peerContent = stripBotMention(message.content, botId).trim().slice(0, MAX_USER_INPUT_CHARS);
   if (!peerContent) {
     return false;
   }
@@ -340,9 +359,13 @@ async function handlePeerBotMessage(message: Message<true>, botId: string): Prom
 
     recordKeqingReply(message.channel.id, reply, now, botTalkLimits);
 
+    // Reply to the peer bot with a real mention so it knows it was addressed.
+    // The mention is rendered from the ID, not from model output, so the model
+    // cannot invent or drop it.
+    const peerMention = `<@${message.author.id}>`;
     await message.reply({
-      content: reply,
-      allowedMentions: { parse: [], repliedUser: false },
+      content: `${peerMention} ${reply}`,
+      allowedMentions: ALLOWED_MENTIONS,
     });
   } catch (error) {
     console.error("[ai] peer bot reply failed:", error);

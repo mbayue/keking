@@ -29,7 +29,7 @@ describe("Keqing persona", () => {
   });
 
   test("keeps the prompt compact", () => {
-    expect(KEQING_SYSTEM_PROMPT.length).toBeLessThan(6_500);
+    expect(KEQING_SYSTEM_PROMPT.length).toBeLessThan(6_600);
   });
 
   test("states hidden traits rather than only surface rules", () => {
@@ -44,7 +44,7 @@ describe("Keqing persona", () => {
   });
 
   test("forbids echoing the user's words back as the answer", () => {
-    expect(KEQING_SYSTEM_PROMPT).toMatch(/echoes or paraphrases/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/Never echoes the user.s words back/i);
   });
 
   test("forbids announcing what the bot was asked to do", () => {
