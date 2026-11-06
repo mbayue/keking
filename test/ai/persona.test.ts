@@ -83,4 +83,13 @@ describe("Keqing persona", () => {
   test("allows a one-line model identity answer without boasting", () => {
     expect(KEQING_SYSTEM_PROMPT).toMatch(/what model it runs on/i);
   });
+
+  test("lets the loved-user context unlock pet names", () => {
+    // The persona bans pet names by default. The loved-user context has to be
+    // able to grant them, otherwise it can never override the ban.
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/Pet names like "sayang" or "beb" are off by default/i);
+    expect(KEQING_SYSTEM_PROMPT).toMatch(/when the context tells you this person is dear to you/i);
+    expect(KEQING_LOVED_USER_CONTEXT).toMatch(/term of endearment/i);
+    expect(KEQING_LOVED_USER_CONTEXT).toMatch(/sayang|beb/i);
+  });
 });
